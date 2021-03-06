@@ -1,0 +1,81 @@
+@media all and (min-width: 480px) {
+  .Signup {
+    padding-bottom: 70px;
+    padding-top: 20px;
+  }
+}
+.FieldStyle {
+  margin: auto auto;
+  max-width: 320px;
+  width: 400px;
+  height: 30px;
+}
+
+.LogoS {
+  color: white;
+  margin-right: 1200px;
+  margin-bottom: -3em;
+  padding-top: 10px;
+  width: 10%;
+  height: 10%;
+}
+.Message {
+  color: brown;
+}
+
+.SignUp {
+  color: rgb(66, 8, 8);
+  border: none;
+  padding: 40px 30px 0px 0px;
+  margin-left: 1200px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.ModalS {
+  width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  margin-bottom: 50px;
+  background-color: rgb(207, 245, 176);
+  /* padding: 100px 100px 100px 100px; */
+  border: none;
+}
+.InS {
+  /* padding-left: 40px; */
+  /* margin: 20px 0px 0px 100px; */
+  width: 250px;
+  height: 30px;
+}
+.InS:hover {
+  background-color: rgb(235, 247, 253);
+}
+.SignupLabel {
+  /* padding-right: 20px; */
+  font-size: 18px;
+  font-weight: 500;
+}
+.buttonSaveModalS {
+  background-color: seagreen;
+  color: white;
+  margin-top: 0px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  font-size: 18px;
+}
+.buttonSaveModalS:hover {
+  background-color: rgb(218, 245, 230);
+  color: rgb(1, 58, 4);
+  font-weight: bold;
+}
+p {
+  font-family: sans-serif;
+  font-size: 14px;
+}
+h2 {
+  padding-top: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

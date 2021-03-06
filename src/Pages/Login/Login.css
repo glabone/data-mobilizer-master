@@ -1,0 +1,53 @@
+@media all and (min-width: 480px) {
+  .Login {
+    padding-bottom: 70px;
+    padding-top: 20px;
+    width: 100%;
+  }
+}
+.FieldStyle {
+  margin: auto auto;
+  max-width: 320px;
+  width: 900px;
+  height: 30px;
+}
+
+.Logo {
+  color: white;
+  margin-right: 1200px;
+  margin-bottom: -3em;
+  padding-top: 10px;
+  width: 10%;
+  height: 10%;
+}
+.Message {
+  color: brown;
+}
+
+.In {
+  /* padding-left: 40px; */
+  margin: 20px 20px 0px 40px;
+}
+.In:hover {
+  background-color: rgb(253, 244, 244);
+}
+.Loginlabel {
+  font-size: 25px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.SignupBTN {
+  background-color: rgb(196, 170, 137);
+  width: 130px;
+  height: 35px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.SignupBTN:hover {
+  background-color: rgb(196, 202, 198);
+}
+
+.SignupLink {
+  text-align: center;
+  margin-top: 50px;
+  margin-left: 1000px;
+}

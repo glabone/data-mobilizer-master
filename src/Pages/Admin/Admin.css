@@ -1,0 +1,154 @@
+@import url("https://fonts.googleapis.com/css2?family=Amiri&display=swap");
+@media all and (min-width: 480px) {
+  .Admin {
+    padding-bottom: 70px;
+    padding-top: 20px;
+  }
+}
+:root {
+  --basic-color: #23cc71;
+}
+/* .App {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Amiri", serif;
+  overflow: hidden;
+} */
+.container {
+  display: flex;
+  flex-direction: row;
+}
+.container h1 {
+  font-size: 60px;
+  text-align: center;
+  color: var(--basic-color);
+}
+.adminContainer {
+  width: 50%;
+  height: 700px;
+  margin: 50px;
+  box-shadow: 0 2px 10px rgba(131, 160, 129, 0.3);
+  overflow: scroll;
+}
+@media screen and (max-width: 600px) {
+  .PCL-container {
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
+  }
+}
+.LogoA {
+  background-color: white;
+  /* color: white;
+  margin-right: 1200px;
+  margin-bottom: -5em; */
+
+  width: 100%;
+  height: 100px;
+}
+
+.topButtons {
+  width: 100px;
+  height: 40px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+  margin-top: 30px;
+}
+.topButtons:hover {
+  background-color: rgb(201, 245, 223);
+  color: rgb(35, 46, 40);
+  font-weight: bold;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+.tableBTN {
+  width: 70px;
+  height: 35px;
+  background-color: rgb(128, 241, 185);
+}
+.tableBTN:hover {
+  background-color: rgb(59, 185, 122);
+}
+
+user agent stylesheet input[type="checkbox" i] {
+  background-color: initial;
+  cursor: default;
+  appearance: auto;
+  box-sizing: border-box;
+  margin: 3px 3px 3px 4px;
+  padding: initial;
+  border: initial;
+}
+/* user agent stylesheet input {
+  -webkit-writing-mode: horizontal-tb !important;
+  text-rendering: auto;
+  color: -internal-light-dark(black, white);
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: start;
+  appearance: textfield;
+  background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
+  -webkit-rtl-ordering: logical;
+  cursor: text;
+  margin: 0em;
+  font: 400 13.3333px Arial;
+  padding: 1px 2px;
+  border-width: 2px;
+  border-style: inset;
+  border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+  border-image: initial;
+} */
+
+/* .MuiSwitch-thumb {
+  color: rgb(9, 158, 84);
+  background-color: rgb(200, 241, 221);
+} */
+.Modal {
+  background-color: rgb(148, 247, 186);
+  padding: 30px 30px 30px 30px;
+  border: none;
+}
+.In {
+  margin-left: 100px;
+  width: 220px;
+}
+.In:hover {
+  background-color: rgb(246, 253, 247);
+}
+.Label {
+  margin-right: 30px;
+}
+.buttonSaveModal {
+  height: 30px;
+  width: 100px;
+  background-color: seagreen;
+  color: white;
+
+  margin-top: 30px;
+  text-align: center;
+  margin-left: 100px;
+}
