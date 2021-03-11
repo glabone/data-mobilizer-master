@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Amiri&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Amiri&display=swap');
 :root {
   --basic-color: #23cc71;
 }
@@ -8,7 +8,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-family: "Amiri", serif;
+  font-family: 'Amiri', serif;
   overflow: hidden;
 }
 .container {
@@ -64,15 +64,11 @@
   height: 10%;
 }
 .BottomDiv {
-  width: 60%;
+  width: 900px;
   height: 200px;
   border: solid rgb(11, 180, 95);
-  margin-left: 200px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  overflow: auto;
-  text-align: left;
-  padding-left: 10px;
+  margin-left: 250px;
+  margin-right: 20px;
   /* margin-right: auto; */
 }
 .GenerateBTN {

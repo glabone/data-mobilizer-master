@@ -1,0 +1,39 @@
+.constBox {
+  width: 60%;
+  height: 150px;
+  border: solid rgb(11, 180, 95);
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+  overflow: auto;
+  text-align: left;
+  padding-right: 25px;
+  /* margin-right: auto; */
+}
+.AddConstBTN {
+  width: 200px;
+  height: 40px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+  margin-top: 30px;
+  cursor: pointer;
+}
+.AddConstBTN:hover {
+  background-color: rgb(201, 245, 223);
+  color: rgb(35, 46, 40);
+  font-weight: bold;
+}
+
+.AddReportBTN {
+  width: 200px;
+  height: 40px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+  margin-top: 30px;
+  cursor: pointer;
+}
+.AddReportBTN:hover {
+  background-color: rgb(201, 245, 223);
+  color: rgb(35, 46, 40);
+  font-weight: bold;
+}

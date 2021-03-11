@@ -15,10 +15,7 @@ import withListLoading from '../../Components/withListLoading/withListLoading';
 import SearchBar from '../../Components/SearchBar/SearchBar';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Constraints from '../../Components/Constraints/Constraints';
-import TimeSelect from '../../Components/TimeSelect/TimeSelect';
-import ByConstraints from '../../Components/ByConstraints/ByConstraints';
 import Styled, { ThemeProvider } from 'styled-components';
-
 const useStyles = makeStyles((theme, themeTwo, themeThree) => ({
   container: {
     display: 'flex',
@@ -232,32 +229,10 @@ function Dashboard(props) {
             </div>
           </Grid>
         </Grid>
-        <Grid container direction='row' alignItems='flex-start'>
-          <Grid item>
-            <div
-              style={{
-                marginLeft: '250px',
-                marginTop: '100px',
-                marginBottom: '100px',
-              }}
-            >
-              <Constraints />
-            </div>
-          </Grid>
-          <Grid item direction='row' alignItems='flex-start'>
-            <div
-              style={{
-                marginLeft: '50px',
-                marginTop: '100px',
-                marginBottom: '100px',
-              }}
-            >
-              {/* <TimeSelect /> */}
 
-              <ByConstraints />
-            </div>
-          </Grid>
-        </Grid>
+        <div style={{ marginLeft: '250px', marginTop: '45px' }}>
+          <Constraints />
+        </div>
         {/* <FormGroup column>
               <h2>Select Type</h2>
 
@@ -372,7 +347,7 @@ function Dashboard(props) {
             </div>
           </div> */}
 
-        <Grid container direction='row' alignItems='flex-start'>
+        <Grid container direction='row' justify='space-evenly'>
           <div className='BottomDiv'>
             {trigger.map((r, i) => (
               <tr className='liBottomDiv'>
@@ -393,6 +368,7 @@ function Dashboard(props) {
                   style={{
                     color: 'rgb(73, 132, 243)',
                     fontWeight: 'bold',
+                    marginRight: '100px',
                   }}
                 >
                   {r.finishDate}
