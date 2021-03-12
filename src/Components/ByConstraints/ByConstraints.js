@@ -11,6 +11,9 @@ import './ByConstraints.css';
 function ByConstraints() {
   const [field, setField] = useState('');
   const [LTGT, setLTGT] = useState('');
+  const [amount, setAmount] = useState('');
+
+  const [constraint, setConstraint] = useState([]);
 
   const handleChange = (event) => {
     setField(event.target.value);
@@ -18,6 +21,10 @@ function ByConstraints() {
   const handleChangeLTGT = (event) => {
     setLTGT(event.target.value);
   };
+  const handleChangeAmount = (event) => {
+    setAmount(event.target.value);
+  };
+  const handleClick = (event) => {};
 
   return (
     <div>
@@ -37,14 +44,14 @@ function ByConstraints() {
                 onChange={handleChange}
                 label='selectFields'
               >
-                <MenuItem value={'flowRate'}>Flow Rate(L/min)</MenuItem>
-                <MenuItem value={'range'}>Range(mm)</MenuItem>
-                <MenuItem value={'temp'}>Temperature(Deg C)</MenuItem>
-                <MenuItem value={'density'}>Density(kg/m^3)</MenuItem>
-                <MenuItem value={'netVolume'}>Net Volume(L)</MenuItem>
-                <MenuItem value={'pressure'}>Pressure(kPa)</MenuItem>
-                <MenuItem value={'outage'}>Outage(in)</MenuItem>
-                <MenuItem value={'grossVolume'}>Gross Volume(L)</MenuItem>
+                <MenuItem value={'Flow Rate'}>Flow Rate(L/min)</MenuItem>
+                <MenuItem value={'Range'}>Range(mm)</MenuItem>
+                <MenuItem value={'Temperature'}>Temperature(Deg C)</MenuItem>
+                <MenuItem value={'Density'}>Density(kg/m^3)</MenuItem>
+                <MenuItem value={'Net Volume'}>Net Volume(L)</MenuItem>
+                <MenuItem value={'Pressure'}>Pressure(kPa)</MenuItem>
+                <MenuItem value={'Outage'}>Outage(in)</MenuItem>
+                <MenuItem value={'Gross Volume'}>Gross Volume(L)</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -64,8 +71,8 @@ function ByConstraints() {
                 onChange={handleChangeLTGT}
                 label='LTGT'
               >
-                <MenuItem value={'lessThan'}>Less Than</MenuItem>
-                <MenuItem value={'greaterThan'}>Greater Than</MenuItem>
+                <MenuItem value={'Less Than'}>Less Than</MenuItem>
+                <MenuItem value={'Greater Than'}>Greater Than</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -81,18 +88,41 @@ function ByConstraints() {
               id='amount'
               label='Enter Target Constraint'
               variant='outlined'
+              value={amount}
+              onChange={handleChangeAmount}
             />
           </form>
         </Grid>
       </Grid>
       <Grid container direction='row' alignItems='flex-start'>
-        <Button
-          className='AddConstBTN'
-          variant='outlined'
-          style={{ marginTop: '45px' }}
-        >
-          Add Constraint
-        </Button>
+        {field != undefined && LTGT != undefined && amount != undefined ? (
+          <button
+            className='addReportBtn'
+            type='submit'
+            onClick={() => {
+              let con = {
+                field,
+                LTGT,
+                amount,
+              };
+              constraint.push(con);
+              setConstraint([...constraint]);
+            }}
+          >
+            Add Constraint
+          </button>
+        ) : (
+          <button
+            disabled
+            className='addReportBtn'
+            style={{
+              backgroundColor: ' lightgray',
+              cursor: 'not-allowed',
+            }}
+          >
+            Add Constraint
+          </button>
+        )}
       </Grid>
       <Grid
         container
@@ -101,7 +131,39 @@ function ByConstraints() {
         style={{ width: 700 }}
       >
         <div className='constBox'>
-          <tr></tr>
+          {constraint.map((r, i) => (
+            <tr className='liBottomDiv'>
+              {' '}
+              <span style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                {r.field}
+              </span>
+              <span>&nbsp;&nbsp;</span>
+              <span style={{ fontWeight: 'bold', fontSize: '20px' }}>
+                {r.LTGT}
+              </span>
+              <span>&nbsp;&nbsp;</span>
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '20px',
+                }}
+              >
+                {r.amount}
+              </span>{' '}
+              {/* <span>&nbsp;&nbsp;</span> <span>&nbsp;&nbsp;</span>{" "}
+                <span>&nbsp;&nbsp;</span> */}
+              <button
+                className='removeBtn'
+                onClick={(e) => {
+                  constraint.splice(i, 1);
+                  setConstraint([...constraint]);
+                }}
+                style={{ marginLeft: '10px' }}
+              >
+                Remove
+              </button>
+            </tr>
+          ))}
         </div>
       </Grid>
     </div>
