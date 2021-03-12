@@ -11,11 +11,6 @@ import './ByConstraints.css';
 function ByConstraints() {
   const [field, setField] = useState('');
   const [LTGT, setLTGT] = useState('');
-  const [btn, setBtn] = useState('');
-
-  const handleClickBtn = (event) => {
-    setBtn(event.target.value);
-  };
 
   const handleChange = (event) => {
     setField(event.target.value);
@@ -42,9 +37,14 @@ function ByConstraints() {
                 onChange={handleChange}
                 label='selectFields'
               >
-                <MenuItem value={'pressure'}>Pressure</MenuItem>
-                <MenuItem value={'volume'}>Volume</MenuItem>
-                <MenuItem value={'temperature'}>Temperature</MenuItem>
+                <MenuItem value={'flowRate'}>Flow Rate(L/min)</MenuItem>
+                <MenuItem value={'range'}>Range(mm)</MenuItem>
+                <MenuItem value={'temp'}>Temperature(Deg C)</MenuItem>
+                <MenuItem value={'density'}>Density(kg/m^3)</MenuItem>
+                <MenuItem value={'netVolume'}>Net Volume(L)</MenuItem>
+                <MenuItem value={'pressure'}>Pressure(kPa)</MenuItem>
+                <MenuItem value={'outage'}>Outage(in)</MenuItem>
+                <MenuItem value={'grossVolume'}>Gross Volume(L)</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -104,17 +104,6 @@ function ByConstraints() {
           <tr></tr>
         </div>
       </Grid>
-      {/* <Grid container direction='row' alignItems='flex-start'>
-        <Button
-          id='addBtn'
-          className='AddReportBTN'
-          variant='outlined'
-          onClick={handleClickBtn}
-          style={{ marginTop: '5px' }}
-        >
-          Add Report
-        </Button>
-      </Grid> */}
     </div>
   );
 }
