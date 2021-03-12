@@ -25,11 +25,7 @@ function Constraints() {
             control={<Radio />}
             label='Select all data'
           />
-          <FormControlLabel
-            value='time'
-            control={<Radio />}
-            label='Select by time interval'
-          />
+
           <FormControlLabel
             value='constraint'
             control={<Radio />}

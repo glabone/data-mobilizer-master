@@ -166,7 +166,7 @@ function Dashboard(props) {
         <Grid container direction='row' alignItems='flex-start'>
           <Grid item padding='10'>
             <div style={{ marginLeft: '250px', marginBottom: '45px' }}>
-              <h2>Select PLC</h2>
+              <h2>Select Car ID</h2>
             </div>
             <div style={{ marginLeft: '250px' }}>
               <select
@@ -247,17 +247,51 @@ function Dashboard(props) {
           <Grid item direction='row' alignItems='flex-start'>
             <div
               style={{
-                marginLeft: '50px',
                 marginTop: '100px',
                 marginBottom: '100px',
               }}
             >
-              {/* <TimeSelect /> */}
-
               <ByConstraints />
+              <Grid direction='row' alignItems='flex-start'>
+                <div style={{ width: '300px' }}>
+                  <br />
+                  {selectedPLC != undefined &&
+                  selectedPLC != '' &&
+                  fromDate != undefined &&
+                  toDate != undefined ? (
+                    <button
+                      className='addReportBtn'
+                      type='submit'
+                      onClick={() => {
+                        let trig = {
+                          carId: selectedPLC,
+                          startDate: fromDate,
+                          finishDate: toDate,
+                        };
+                        trigger.push(trig);
+                        setTrigger([...trigger]);
+                      }}
+                    >
+                      Add Report
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className='addReportBtn'
+                      style={{
+                        backgroundColor: ' lightgray',
+                        cursor: 'not-allowed',
+                      }}
+                    >
+                      Add Report
+                    </button>
+                  )}
+                </div>
+              </Grid>
             </div>
           </Grid>
         </Grid>
+
         {/* <FormGroup column>
               <h2>Select Type</h2>
 
@@ -307,43 +341,6 @@ function Dashboard(props) {
               />
             </FormGroup> */}
 
-        {/* <div style={{ width: '300px' }}>
-            
-
-            <br />
-            {selectedPLC != undefined &&
-            selectedPLC != '' &&
-            fromDate != undefined &&
-            toDate != undefined ? (
-              <button
-                className='GenerateBTN'
-                type='submit'
-                onClick={() => {
-                  console.log(' ' + checkedC + checkedB + checkedA);
-                  let trig = {
-                    carId: selectedPLC,
-                    startDate: fromDate,
-                    finishDate: toDate,
-                  };
-                  trigger.push(trig);
-                  setTrigger([...trigger]);
-                }}
-              >
-                Set Trigger
-              </button>
-            ) : (
-              <button
-                disabled
-                className='GenerateBTN'
-                style={{
-                  backgroundColor: ' lightgray',
-                  cursor: 'not-allowed',
-                }}
-              >
-                Set Trigger
-              </button>
-            )}
-          </div> */}
         {/* <div>
             <h2>Select Type By Range</h2>
             <div className='sideDiv'>
@@ -372,7 +369,7 @@ function Dashboard(props) {
             </div>
           </div> */}
 
-        <Grid container direction='row' alignItems='flex-start'>
+        <Grid direction='row' alignItems='flex-start'>
           <div className='BottomDiv'>
             {trigger.map((r, i) => (
               <tr className='liBottomDiv'>
@@ -405,51 +402,54 @@ function Dashboard(props) {
                     trigger.splice(i, 1);
                     setTrigger([...trigger]);
                   }}
+                  style={{ marginLeft: '10px' }}
                 >
                   Remove
                 </button>
               </tr>
             ))}
           </div>{' '}
-          {selectedPLC != undefined &&
-          selectedPLC != '' &&
-          fromDate != undefined &&
-          toDate != undefined ? (
-            <button
-              className='GenerateBTN'
-              style={{ height: '50px' }}
-              type='submit'
-              onClick={(e) => {
-                e.preventDefault();
-                {
-                  trigger.map((t) => {
-                    window.open(
-                      'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=' +
-                        t.carId +
-                        '&startDate=' +
-                        t.startDate +
-                        '&finishDate=' +
-                        t.finishDate
-                    );
-                  });
-                }
-              }}
-            >
-              Generate Report
-            </button>
-          ) : (
-            <button
-              disabled
-              className='GenerateBTN'
-              style={{
-                height: '50px',
-                backgroundColor: ' lightgray',
-                cursor: 'not-allowed',
-              }}
-            >
-              Generate Report
-            </button>
-          )}
+          <Grid direction='row' alignItems='flex-start'>
+            {selectedPLC != undefined &&
+            selectedPLC != '' &&
+            fromDate != undefined &&
+            toDate != undefined ? (
+              <button
+                className='GenerateBTN'
+                style={{ height: '50px' }}
+                type='submit'
+                onClick={(e) => {
+                  e.preventDefault();
+                  {
+                    trigger.map((t) => {
+                      window.open(
+                        'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=' +
+                          t.carId +
+                          '&startDate=' +
+                          t.startDate +
+                          '&finishDate=' +
+                          t.finishDate
+                      );
+                    });
+                  }
+                }}
+              >
+                Generate Report
+              </button>
+            ) : (
+              <button
+                disabled
+                className='GenerateBTN'
+                style={{
+                  height: '50px',
+                  backgroundColor: ' lightgray',
+                  cursor: 'not-allowed',
+                }}
+              >
+                Generate Report
+              </button>
+            )}
+          </Grid>
         </Grid>
       </Grid>
     </>

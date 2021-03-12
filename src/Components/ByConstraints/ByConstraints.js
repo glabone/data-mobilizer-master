@@ -11,6 +11,11 @@ import './ByConstraints.css';
 function ByConstraints() {
   const [field, setField] = useState('');
   const [LTGT, setLTGT] = useState('');
+  const [btn, setBtn] = useState('');
+
+  const handleClickBtn = (event) => {
+    setBtn(event.target.value);
+  };
 
   const handleChange = (event) => {
     setField(event.target.value);
@@ -99,15 +104,17 @@ function ByConstraints() {
           <tr></tr>
         </div>
       </Grid>
-      <Grid container direction='row' alignItems='flex-start'>
+      {/* <Grid container direction='row' alignItems='flex-start'>
         <Button
+          id='addBtn'
           className='AddReportBTN'
           variant='outlined'
+          onClick={handleClickBtn}
           style={{ marginTop: '5px' }}
         >
           Add Report
         </Button>
-      </Grid>
+      </Grid> */}
     </div>
   );
 }
