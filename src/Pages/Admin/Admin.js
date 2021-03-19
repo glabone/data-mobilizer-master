@@ -32,9 +32,8 @@ function Admin(props) {
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
   let [search, setSearch] = useState("");
-  const newproxy = "https://api.allorigins.win/get?callback=myFunc&url=";
-  const proxy = "https://cors-anywhere.herokuapp.com/";
-  const proxyurl = "https://api.allorigins.win/raw?url=";
+  let [temp, setTemp] = useState({});
+  let [tempId, setTempId] = useState("");
   const REST_API_URL =
     "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/users/";
 
@@ -53,13 +52,6 @@ function Admin(props) {
   useEffect(() => {
     let mounted = true;
     getList();
-    // .then((items) => {
-    //   if (mounted) {
-    //     setUserInfo(items);
-    //   }
-    // }
-    // );
-    // return () => (mounted = false);
   }, []);
 
   function getList() {
@@ -71,9 +63,18 @@ function Admin(props) {
       .then((data) => data.json())
       .then((items) => setUserInfo(items));
   }
-  const deleteUser = (id, index) => {
-    delete UserInfo[index];
+  const handleChangeEdit = (event) => {
+    UserInfo.find((user) => {
+      return user.id === event.target.value;
+    });
+  };
+  const deleteUser = (id) => {
+    delete UserInfo.find((user) => {
+      return user.id === id;
+    });
+
     fetch(REST_API_URL + id, { method: "Delete" }).then((result) => {
+      getList();
       setUserInfo([...UserInfo]);
     });
   };
@@ -81,17 +82,27 @@ function Admin(props) {
     setSearch(e.target.value);
   };
 
-  const handleChangeAdmin = (index) => {
-    UserInfo[index].admin = UserInfo[index].admin == 0 ? 1 : 0;
+  const handleChangeAdmin = (id) => {
+    UserInfo.find((user) => {
+      return user.id === id;
+    }).admin =
+      UserInfo.find((user) => {
+        return user.id === id;
+      }).admin == 0
+        ? 1
+        : 0;
+    const a = UserInfo.find((user) => {
+      return user.id === id;
+    });
     const REST_API_URL =
       "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/users/";
-    fetch(REST_API_URL + UserInfo[index].id, {
+    fetch(REST_API_URL + a.id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
 
-      body: JSON.stringify(UserInfo[index]),
+      body: JSON.stringify(a),
     })
       .then((response) => {
         if (response.ok) {
@@ -119,29 +130,34 @@ function Admin(props) {
   };
 
   ////////////////////
-  const handleChange = (index) => {
-    UserInfo[index].active = UserInfo[index].active == 0 ? 1 : 0;
-    const hardValue = {
-      firstName: "MOEee",
-      lastName: "khaled",
-      email: "Moe@BBBBBB.COM_NEW",
-      password: "128_NEW",
-    };
+  const handleChange = (id) => {
+    UserInfo.find((user) => {
+      return user.id === id;
+    }).active =
+      UserInfo.find((user) => {
+        return user.id === id;
+      }).active == 0
+        ? 1
+        : 0;
+    const u = UserInfo.find((user) => {
+      return user.id === id;
+    });
     const REST_API_URL =
       "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/users/";
-    fetch(REST_API_URL + UserInfo[index].id, {
+    fetch(REST_API_URL + u.id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
 
-      body: JSON.stringify(UserInfo[index]),
+      body: JSON.stringify(u),
     })
       .then((response) => {
         if (response.ok) {
           return response;
         } else {
           // HANDLE ERROR
+          console.log(u.id);
           throw new Error("Something went wrong");
         }
       })
@@ -197,28 +213,52 @@ function Admin(props) {
 
     console.log("jygfuxcfvghjkjihgfcghjkhgfcgvhjkljh");
     if (
-      UserInfo[i].firstName != "" &&
-      UserInfo[i].lastName != "" &&
-      UserInfo[i].email != ""
+      UserInfo.find((user) => {
+        return user.id === tempId;
+      }).firstName != "" &&
+      UserInfo.find((user) => {
+        return user.id === tempId;
+      }).lastName != "" &&
+      UserInfo.find((user) => {
+        return user.id === tempId;
+      }).email != ""
     ) {
       const newUser = {
-        firstName: UserInfo[i].firstName,
-        lastName: UserInfo[i].lastName,
-        email: UserInfo[i].email,
-        password: UserInfo[i].password,
-        active: UserInfo[i].active,
-        admin: UserInfo[i].admin,
+        firstName: UserInfo.find((user) => {
+          return user.id === tempId;
+        }).firstName,
+        lastName: UserInfo.find((user) => {
+          return user.id === tempId;
+        }).lastName,
+        email: UserInfo.find((user) => {
+          return user.id === tempId;
+        }).email,
+        password: UserInfo.find((user) => {
+          return user.id === tempId;
+        }).password,
+        active: UserInfo.find((user) => {
+          return user.id === tempId;
+        }).active,
+        admin: UserInfo.find((user) => {
+          return user.id === tempId;
+        }).admin,
       };
       console.log(newUser);
 
-      fetch(REST_API_URL + UserInfo[i].id, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      fetch(
+        REST_API_URL +
+          UserInfo.find((user) => {
+            return user.id === tempId;
+          }).id,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify(newUser),
-      })
+          body: JSON.stringify(newUser),
+        }
+      )
         .then((response) => {
           if (response.ok) {
             setUserInfo([...UserInfo]);
@@ -363,7 +403,7 @@ function Admin(props) {
                 <td>
                   {" "}
                   {adminId != dynamicData.id ? (
-                    <button onClick={() => deleteUser(dynamicData.id, index)}>
+                    <button onClick={() => deleteUser(dynamicData.id)}>
                       {" "}
                       <DeleteIcon />
                     </button>
@@ -374,6 +414,10 @@ function Admin(props) {
                       aria-describedby={id}
                       onClick={() => {
                         setI(index);
+                        temp = UserInfo[index];
+                        setTempId(dynamicData.id);
+                        setTemp(temp);
+                        console.log(temp);
                         setOpened(true);
                       }}
                     >
@@ -390,29 +434,19 @@ function Admin(props) {
                 <td>
                   {adminId != dynamicData.id ? (
                     <Switch
-                      checked={dynamicData.active == 1}
-                      onChange={() => handleChange(index)}
+                      checked={dynamicData.active === 1}
+                      onChange={() => handleChange(dynamicData.id)}
                     />
                   ) : null}
                 </td>
                 <td>
                   {adminId != dynamicData.id ? (
                     <Switch
-                      checked={dynamicData.admin == 1}
-                      onChange={() => handleChangeAdmin(index)}
+                      checked={dynamicData.admin === 1}
+                      onChange={() => handleChangeAdmin(dynamicData.id)}
                     />
                   ) : null}
                 </td>
-                {/* <td>
-                  <Switch
-                    checked={dynamicData.admin == 1}
-                    // onChange={handleChange}
-                    name="checkedB"
-                    // style={{ color: "green" }}
-                    color="secondary"
-                    inputProps={{ "aria-label": "secondary checkbox" }}
-                  />
-                </td> */}
               </tr>
             ))}
           </table>
@@ -472,7 +506,6 @@ function Admin(props) {
         <Popover
           id={id}
           open={opened}
-          //  anchorEl={anchorEl}
           onClose={handleClose}
           anchorOrigin={{
             vertical: "center",
@@ -494,9 +527,19 @@ function Admin(props) {
                   className="In"
                   type="text"
                   name="firstName"
-                  value={UserInfo[i] != null ? UserInfo[i].firstName : "jhbjb"}
+                  value={
+                    UserInfo.find((user) => {
+                      return user.id === tempId;
+                    }) != null
+                      ? UserInfo.find((user) => {
+                          return user.id === tempId;
+                        }).firstName
+                      : "jhbjb"
+                  }
                   onChange={(event) => {
-                    UserInfo[i].firstName = event.target.value;
+                    UserInfo.find((user) => {
+                      return user.id === tempId;
+                    }).firstName = event.target.value;
                     setUserInfo([...UserInfo]);
                   }}
                 />
@@ -509,9 +552,20 @@ function Admin(props) {
                   style={{ margin: "10px 40px 0px 10px" }}
                   type="text"
                   name="lastName"
-                  value={UserInfo[i] != null ? UserInfo[i].lastName : "jhbjb"}
+                  value={
+                    UserInfo.find((user) => {
+                      return user.id === tempId;
+                    }) != null
+                      ? UserInfo.find((user) => {
+                          return user.id === tempId;
+                        }).lastName
+                      : "jhbjb"
+                  }
+                  //onChange={handleChangeEdit(tempId)}
                   onChange={(event) => {
-                    UserInfo[i].lastName = event.target.value;
+                    UserInfo.find((user) => {
+                      return user.id === tempId;
+                    }).lastName = event.target.value;
                     setUserInfo([...UserInfo]);
                   }}
                 />
@@ -524,10 +578,19 @@ function Admin(props) {
                   // style={{ margin: "10px 10px 10px 10px" }}
                   type="email"
                   name="email"
-                  value={UserInfo[i] != null ? UserInfo[i].email : "jhbjb"}
+                  value={
+                    UserInfo.find((user) => {
+                      return user.id === tempId;
+                    }) != null
+                      ? UserInfo.find((user) => {
+                          return user.id === tempId;
+                        }).email
+                      : "jhbjb"
+                  }
                   onChange={(event) => {
-                    console.log("hena ho");
-                    UserInfo[i].email = event.target.value;
+                    UserInfo.find((user) => {
+                      return user.id === tempId;
+                    }).email = event.target.value;
                     setUserInfo([...UserInfo]);
                   }}
                 />

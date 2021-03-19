@@ -9,6 +9,7 @@ import { withFormik, Form, Field } from "formik";
 import { Link } from "react-router-dom";
 const Login = (props) => {
   const [open, setOpen] = useState(false);
+
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
@@ -87,6 +88,7 @@ const LoginFormik = withFormik({
 
   handleSubmit: (values, setToken) => {
     // const { history } = this.props; when added it breaks the code with no error
+
     const REST_API_URL =
       "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/users/";
     fetch(REST_API_URL + "email=" + values.email, {
@@ -108,19 +110,23 @@ const LoginFormik = withFormik({
         if (items.password == values.password) {
           if (items.admin == true && items.active == true) {
             localStorage.setItem("adminId", items.id);
-            console.log("here" + items.id);
+            localStorage.setItem("userLoggedIn", items.id);
+            localStorage.setItem("userEmail", items.email);
             localStorage.setItem("isAdmin", items.admin);
             setToken.props.setToken(true);
             localStorage.setItem("token", true);
           } else if (items.admin == true && items.active == false) {
             setToken.props.setToken(undefined);
-            console.log("admin is not active");
+            alert("User Not Active ");
           } else if (items.admin == false && items.active == true) {
             localStorage.setItem("isAdmin", false);
+            localStorage.setItem("userLoggedIn", items.id);
+            localStorage.setItem("userEmail", items.email);
             setToken.props.setToken(false);
             localStorage.setItem("token", false);
           } else {
             setToken.props.setToken(undefined);
+            alert("User Not Active ");
             console.log("user is not an admin and not active");
           }
         } else {
