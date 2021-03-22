@@ -18,6 +18,7 @@ import Constraints from '../../Components/Constraints/Constraints';
 import TimeSelect from '../../Components/TimeSelect/TimeSelect';
 import ByConstraints from '../../Components/ByConstraints/ByConstraints';
 import Styled, { ThemeProvider } from 'styled-components';
+import Switch from 'react-switch';
 
 const useStyles = makeStyles((theme, themeTwo, themeThree) => ({
   container: {
@@ -138,6 +139,23 @@ function Dashboard(props) {
               Admin
             </Link>
           ) : null}
+          <Link
+            onClick={() => setToken('auto')}
+            style={{
+              display: 'inline-flex',
+              VerticalAlign: 'text-bottom',
+              BoxSizing: 'inherit',
+              textAlign: 'center',
+              marginTop: '50px',
+              marginRight: '10px',
+              paddingLeft: '30px',
+              fontSize: '20px',
+              color: '#ffffff',
+              textDecoration: 'none',
+            }}
+          >
+            Auto Generated Report
+          </Link>
           <div style={{ flexGrow: '1' }}></div>
           <br />
           <Link
@@ -233,63 +251,65 @@ function Dashboard(props) {
           </Grid>
         </Grid>
         <Grid container direction='row' alignItems='flex-start'>
-          <Grid item>
-            <div
-              style={{
-                marginLeft: '250px',
-                marginTop: '100px',
-                marginBottom: '100px',
-              }}
-            >
-              <Constraints />
-            </div>
-          </Grid>
-          <Grid item direction='row' alignItems='flex-start'>
-            <div
-              style={{
-                marginTop: '100px',
-                marginBottom: '100px',
-              }}
-            >
-              <ByConstraints />
-              <Grid direction='row' alignItems='flex-start'>
-                <div style={{ width: '300px' }}>
-                  <br />
-                  {selectedPLC != undefined &&
-                  selectedPLC != '' &&
-                  fromDate != undefined &&
-                  toDate != undefined ? (
-                    <button
-                      className='addReportBtn'
-                      type='submit'
-                      onClick={() => {
-                        let trig = {
-                          carId: selectedPLC,
-                          startDate: fromDate,
-                          finishDate: toDate,
-                        };
-                        trigger.push(trig);
-                        setTrigger([...trigger]);
-                      }}
-                    >
-                      Add Report
-                    </button>
-                  ) : (
-                    <button
-                      disabled
-                      className='addReportBtn'
-                      style={{
-                        backgroundColor: ' lightgray',
-                        cursor: 'not-allowed',
-                      }}
-                    >
-                      Add Report
-                    </button>
-                  )}
-                </div>
-              </Grid>
-            </div>
-          </Grid>
+          <div
+            style={{
+              marginLeft: '250px',
+              marginTop: '20px',
+              marginBottom: '20px',
+            }}
+          >
+            <Constraints />
+          </div>
+        </Grid>
+        <Grid container direction='row' alignItems='flex-start'>
+          <div
+            style={{
+              marginLeft: '250px',
+              marginBottom: '50px',
+            }}
+          >
+            <Grid container direction='row' alignItems='flex-start'>
+              <div>
+                <ByConstraints />
+              </div>
+            </Grid>
+            <Grid container direction='row' alignItems='flex-start'>
+              <div style={{ marginLeft: '0px' }}>
+                <br />
+                {selectedPLC != undefined &&
+                selectedPLC != '' &&
+                fromDate != undefined &&
+                toDate != undefined ? (
+                  <button
+                    className='addReportBtn'
+                    type='submit'
+                    onClick={() => {
+                      let trig = {
+                        carId: selectedPLC,
+                        startDate: fromDate,
+                        finishDate: toDate,
+                      };
+                      trigger.push(trig);
+                      setTrigger([...trigger]);
+                    }}
+                  >
+                    Add Report
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className='addReportBtn'
+                    style={{
+                      backgroundColor: ' lightgray',
+                      cursor: 'not-allowed',
+                    }}
+                  >
+                    Add Report
+                  </button>
+                )}
+              </div>
+            </Grid>
+          </div>
         </Grid>
 
         {/* <FormGroup column>
@@ -369,7 +389,7 @@ function Dashboard(props) {
             </div>
           </div> */}
 
-        <Grid direction='row' alignItems='flex-start'>
+        <Grid direction='column' alignItems='flex-start'>
           <div className='BottomDiv'>
             {trigger.map((r, i) => (
               <tr className='liBottomDiv'>
@@ -409,7 +429,7 @@ function Dashboard(props) {
               </tr>
             ))}
           </div>{' '}
-          <Grid direction='row' alignItems='flex-start'>
+          <Grid alignItems='flex-start'>
             {selectedPLC != undefined &&
             selectedPLC != '' &&
             fromDate != undefined &&

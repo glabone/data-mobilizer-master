@@ -88,7 +88,7 @@
 .customSelect {
   width: 150px;
   height: 30px;
-  background-color: rgb(213, 250, 203);
+  /* background-color: rgb(213, 250, 203); */
   cursor: pointer;
 }
 .removeBtn {
@@ -109,13 +109,22 @@
   width: 300px;
   border: solid rgb(11, 180, 95);
   background-color: rgb(213, 250, 203);
-  border-radius: 3rem;
+
   margin-top: 20px;
 }
 .sideInput {
   width: 70px;
 }
 .addReportBtn {
+  width: 200px;
+  height: 40px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.addConstBtn {
   width: 200px;
   height: 40px;
   background-color: rgb(11, 180, 95);

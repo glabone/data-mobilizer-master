@@ -95,9 +95,9 @@ function ByConstraints() {
         </Grid>
       </Grid>
       <Grid container direction='row' alignItems='flex-start'>
-        {field != undefined && LTGT != undefined && amount != undefined ? (
+        {field != '' && LTGT != '' && amount != '' ? (
           <button
-            className='addReportBtn'
+            className='addConstBtn'
             type='submit'
             onClick={() => {
               let con = {
@@ -114,7 +114,7 @@ function ByConstraints() {
         ) : (
           <button
             disabled
-            className='addReportBtn'
+            className='addConstBtn'
             style={{
               backgroundColor: ' lightgray',
               cursor: 'not-allowed',
@@ -132,7 +132,7 @@ function ByConstraints() {
       >
         <div className='constBox'>
           {constraint.map((r, i) => (
-            <tr className='liBottomDiv'>
+            <tr className='constBox'>
               {' '}
               <span style={{ fontWeight: 'bold', fontSize: '20px' }}>
                 {r.field}
@@ -150,8 +150,6 @@ function ByConstraints() {
               >
                 {r.amount}
               </span>{' '}
-              {/* <span>&nbsp;&nbsp;</span> <span>&nbsp;&nbsp;</span>{" "}
-                <span>&nbsp;&nbsp;</span> */}
               <button
                 className='removeBtn'
                 onClick={(e) => {
