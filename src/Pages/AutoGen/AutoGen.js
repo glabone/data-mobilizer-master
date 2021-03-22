@@ -39,24 +39,32 @@ function AutoGen(props) {
   const [constraint, setConstraint] = useState([]);
   const [trigger, setTrigger] = useState([]);
 
+  //   Handle the fields in the drop down list
   const handleChangeFields = (event) => {
     setField(event.target.value);
   };
 
+  //   handles the interval For the report
   const handleChangeRadioInt = (event) => {
     setRadioInt(event.target.value);
   };
+
+  //   handles if the report need constraints or not
   const handleChangeRadioCon = (event) => {
     setRadioCon(event.target.value);
   };
 
+  //   Handles the drop down menu for Less than or greater than
   const handleChangeLTGT = (event) => {
     setLTGT(event.target.value);
   };
+
+  //   Handles the amount for the constraint
   const handleChangeAmount = (event) => {
     setAmount(event.target.value);
   };
 
+  //   ?? only displays the unique values for the PLC's
   function uniqueBy(arr, prop) {
     return arr.reduce((a, d) => {
       if (!a.includes(d[prop])) {
@@ -66,6 +74,7 @@ function AutoGen(props) {
     }, []);
   }
 
+  //   This pull the value from the API and creates the PLC list
   useEffect(() => {
     const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/plc/alluniquecarid/`;
     fetch(apiUrl)
@@ -99,6 +108,7 @@ function AutoGen(props) {
           Auto Generated Report
         </h1>
       </div>
+      {/* This is the Code for the template */}
       <Grid container direction='row'>
         <div
           style={{
@@ -174,6 +184,11 @@ function AutoGen(props) {
             <ExitToAppIcon /> Log Out
           </Link>
         </div>
+
+        {/* This is where the template code finishes */}
+
+        {/* This is the Interval Remote Button */}
+
         <Grid container direction='row' alignItems='flex-start'>
           <Grid item>
             <div style={{ marginLeft: '500px', marginTop: '50px' }}>
@@ -199,34 +214,39 @@ function AutoGen(props) {
               </FormControl>
             </div>
           </Grid>
-          <Grid item>
-            <Grid item>
-              <div style={{ marginLeft: '50px', marginTop: '50px' }}>
-                <FormControl component='constraint'>
-                  <RadioGroup
-                    aria-label='Constraints'
-                    name='constraints'
-                    value={radioCon}
-                    onClick={handleChangeRadioCon}
-                  >
-                    <FormControlLabel
-                      value='selectAll'
-                      control={<Radio />}
-                      label='Select All Data'
-                    />
 
-                    <FormControlLabel
-                      value='setConstaint'
-                      control={<Radio />}
-                      label='Set Constraint'
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </div>
-            </Grid>
+          {/* This is the second set of remote button for select all or by constraints */}
+          <Grid item>
+            <div style={{ marginLeft: '50px', marginTop: '50px' }}>
+              <FormControl component='constraint'>
+                <RadioGroup
+                  aria-label='Constraints'
+                  name='constraints'
+                  value={radioCon}
+                  onClick={handleChangeRadioCon}
+                >
+                  <FormControlLabel
+                    value='selectAll'
+                    control={<Radio />}
+                    label='Select All Data'
+                  />
+
+                  <FormControlLabel
+                    value='setConstaint'
+                    control={<Radio />}
+                    label='Set Constraint'
+                  />
+                </RadioGroup>
+              </FormControl>
+            </div>
           </Grid>
         </Grid>
+
+        {/* This is a Grid with the Select car ID, Select fields, select LTGT, enter amount */}
+
         <Grid container direction='row' alignItems='flex-start'>
+          {/* This is where the select Car ID starts */}
+
           <Grid item>
             <div>
               <div style={{ marginLeft: '250px', marginBottom: '30px' }}>
@@ -260,6 +280,9 @@ function AutoGen(props) {
               </div>
             </div>
           </Grid>
+
+          {/* Select Field */}
+
           <Grid item>
             <div
               className='fields'
@@ -290,6 +313,9 @@ function AutoGen(props) {
               </FormControl>
             </div>
           </Grid>
+
+          {/* Select Less than or Greater than */}
+
           <Grid item>
             <div
               className=''
@@ -314,6 +340,9 @@ function AutoGen(props) {
               </FormControl>
             </div>
           </Grid>
+
+          {/* Text Field for the amount */}
+
           <Grid item>
             <div style={{ marginLeft: '50px', marginTop: '100px' }}>
               <form className='' noValidate autoComplete='off'>
@@ -328,6 +357,10 @@ function AutoGen(props) {
             </div>
           </Grid>
         </Grid>
+
+        {/* This is where the constraint Box starts. 
+        First the add constraint button and then the constraint box */}
+
         <Grid container direction='row' alignItems='flex-start'>
           <div style={{ marginLeft: '250px', marginBottom: '10px' }}>
             {field != '' && LTGT != '' && amount != '' ? (
@@ -410,6 +443,9 @@ function AutoGen(props) {
             ))}
           </div>
         </Grid>
+
+        {/* This is the end of the constraints box section */}
+
         <Grid container direction='row' alignItems='flex-start'>
           <div style={{ marginLeft: '250px', marginBottom: '50px' }}>
             <br />
@@ -441,7 +477,7 @@ function AutoGen(props) {
             )}
           </div>
         </Grid>
-
+        {/* This is the start of the Reports box at the bottom */}
         <Grid direction='row' alignItems='flex-start'>
           <h2>List of Reports</h2>
           <div className='BottomDiv'>
