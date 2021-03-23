@@ -292,32 +292,48 @@ function Dashboard(props) {
 
         <div style={{ flexGrow: "1" }}></div>
 
-        <Grid container direction="row" justify="space-evenly">
-          <div className="bollet">
-            <h2>Select Type</h2>
+        {/* <Grid container direction="row" justify="space-evenly"> */}
 
-            <FormControl component="fieldset">
-              <FormLabel component="legend"></FormLabel>
-              <RadioGroup
-                aria-label="gender"
-                name="gender1"
-                value={value}
-                onChange={handleChange}
-              >
-                <FormControlLabel
-                  value="allData"
-                  control={<Radio />}
-                  label="select All Data"
-                />
-                <FormControlLabel
-                  value="constraint"
-                  control={<Radio />}
-                  label="Select By Constraint."
-                />
-              </RadioGroup>
-            </FormControl>
-          </div>
-          {value !== "allData" ? (
+        <div
+          className="bollet"
+          style={{
+            marginLeft: "220px",
+            marginRight: "70px",
+          }}
+        >
+          <h2>Select Type</h2>
+
+          <FormControl component="fieldset">
+            <FormLabel component="legend"></FormLabel>
+            <RadioGroup
+              aria-label="gender"
+              name="gender1"
+              value={value}
+              onChange={handleChange}
+            >
+              <FormControlLabel
+                value="allData"
+                control={<Radio />}
+                label="select All Data"
+              />
+              <FormControlLabel
+                value="constraint"
+                control={<Radio />}
+                label="Select By Constraint."
+              />
+            </RadioGroup>
+          </FormControl>
+        </div>
+
+        {value !== "allData" ? (
+          <div
+            style={{
+              backgroundColor: "#f0f8ff",
+              marginTop: "20px",
+              paddingLeft: "20px",
+              boxShadow: "5px 2px 5px #DCDCDC",
+            }}
+          >
             <div>
               {" "}
               <FormControl
@@ -391,11 +407,10 @@ function Dashboard(props) {
                   setTargetField(e.target.value);
                 }}
               />
-            </div>
-          ) : (
-            <div className="fixDiv" style={{ flexGrow: "1" }}></div>
-          )}
-        </Grid>
+            </div>{" "}
+          </div>
+        ) : null}
+        {/* </Grid> */}
 
         <Grid container direction="row" justify="space-evenly">
           <div>
@@ -540,98 +555,107 @@ function Dashboard(props) {
         <h2>Selected Triggers</h2>
         <div className="BottomDiv">
           {trigger.map((r, i) => (
-            <tr className="liBottomDiv">
-              <td>
-                PLC ID :{" "}
-                <span
-                  style={{ color: "rgb(73, 132, 243)", fontWeight: "bold" }}
-                >
-                  {r.carId}
-                </span>
-                <span>&nbsp;&nbsp;</span> From Date :
-                <span
-                  style={{ color: "rgb(73, 132, 243)", fontWeight: "bold" }}
-                >
-                  {r.startDate}
-                </span>
-                <span>&nbsp;&nbsp;</span> To Date :
-                <span
-                  style={{
-                    color: "rgb(73, 132, 243)",
-                    fontWeight: "bold",
-                    marginRight: "40px",
-                  }}
-                >
-                  {r.finishDate}
-                </span>{" "}
-              </td>
+            <table>
+              <tr className="liBottomDiv">
+                <td style={{ borderColor: "white" }}>
+                  PLC ID :{" "}
+                  <span
+                    style={{ color: "rgb(73, 132, 243)", fontWeight: "bold" }}
+                  >
+                    {r.carId}
+                  </span>
+                  <span>&nbsp;&nbsp;</span> From Date :
+                  <span
+                    style={{ color: "rgb(73, 132, 243)", fontWeight: "bold" }}
+                  >
+                    {r.startDate}
+                  </span>
+                  <span>&nbsp;&nbsp;</span> To Date :
+                  <span
+                    style={{
+                      color: "rgb(73, 132, 243)",
+                      fontWeight: "bold",
+                      marginRight: "40px",
+                    }}
+                  >
+                    {r.finishDate}
+                  </span>{" "}
+                </td>
 
-              <td>
-                <li>
+                <td>
+                  <button
+                    className="removeBtn"
+                    onClick={(e) => {
+                      trigger.splice(i, 1);
+                      setTrigger([...trigger]);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </td>
+                <td>
                   {" "}
-                  {r.constraintArray.map((h) => h.fieldType)}{" "}
-                  <span>&nbsp;</span>
-                  {r.constraintArray.map((h) => h.condition)}{" "}
-                  <span>&nbsp;</span>
-                  {r.constraintArray.map((h) => h.targetField)}
-                </li>
-              </td>
-              <td>
-                <button
-                  className="removeBtn"
-                  onClick={(e) => {
-                    trigger.splice(i, 1);
-                    setTrigger([...trigger]);
-                  }}
-                >
-                  Remove
-                </button>
-              </td>
-              <td>
-                {" "}
-                <button
-                  className="removeBtn"
-                  type="submit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    {
-                      window.open(
-                        "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
-                          r.carId +
-                          "&startDate=" +
-                          r.startDate +
-                          "&finishDate=" +
-                          r.finishDate
-                      );
-                    }
-                  }}
-                >
-                  Get PDF
-                </button>
-              </td>
-              <td>
-                {" "}
-                <button
-                  className="removeBtn"
-                  type="submit"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    {
-                      window.open(
-                        "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=" +
-                          r.carId +
-                          "&startDate=" +
-                          r.startDate +
-                          "&finishDate=" +
-                          r.finishDate
-                      );
-                    }
-                  }}
-                >
-                  Get Excel
-                </button>
-              </td>
-            </tr>
+                  <button
+                    className="removeBtn"
+                    type="submit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      {
+                        window.open(
+                          "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
+                            r.carId +
+                            "&startDate=" +
+                            r.startDate +
+                            "&finishDate=" +
+                            r.finishDate
+                        );
+                      }
+                    }}
+                  >
+                    Get PDF
+                  </button>
+                </td>
+                <td>
+                  {" "}
+                  <button
+                    className="removeBtn"
+                    type="submit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      {
+                        window.open(
+                          "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=" +
+                            r.carId +
+                            "&startDate=" +
+                            r.startDate +
+                            "&finishDate=" +
+                            r.finishDate
+                        );
+                      }
+                    }}
+                  >
+                    Get Excel
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={4} style={{ borderColor: "blueviolet" }}>
+                  {" "}
+                  {r.constraintArray.map((h) => (
+                    <li>
+                      {" "}
+                      {h.fieldType} {h.condition} {h.targetField}
+                    </li>
+                  ))}{" "}
+                </td>
+              </tr>
+              {/* <tr>
+                <td colSpan={4}>
+                  {" "}
+                  <hr style={{ borderColor: "darkgray" }} />
+                </td>
+              </tr> */}
+            </table>
           ))}
         </div>{" "}
         <div>
