@@ -30,15 +30,51 @@ function AutoGen(props) {
   let [uniquePlcs, setUniquePlcs] = useState([]);
   const { setToken } = props;
   let [theme, setTheme] = useState({ main: ' rgba(211, 211, 211, 0.8);' });
+  let [firstConList, setFirstConList] = useState(0);
   const [selectedPLC, setSelectedPLC] = useState('');
   const [radioInt, setRadioInt] = useState('');
   const [radioCon, setRadioCon] = useState('');
   const [field, setField] = useState('');
   const [LTGT, setLTGT] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [amount, setAmount] = useState('');
   const [constraint, setConstraint] = useState([]);
   const [trigger, setTrigger] = useState([]);
   const [autoGen, setAutoGen] = useState([]);
+  const [constraintList, setConstraintList] = useState([
+    {
+      id: '1',
+      userEmail: 'test@test.com',
+      field: 'flowRate',
+      LTGT: 'greaterThan',
+      amount: '10',
+      status: '1',
+    },
+    {
+      id: '2',
+      userEmail: 'test@test.com',
+      field: 'pressure',
+      LTGT: 'lessThan',
+      amount: '200',
+      status: '1',
+    },
+    {
+      id: '3',
+      userEmail: 'test@test.com',
+      field: 'temperature',
+      LTGT: 'greaterThan',
+      amount: '20',
+      status: '1',
+    },
+    {
+      id: '4',
+      userEmail: 'admin@a.com',
+      field: 'flowRate',
+      LTGT: 'greaterThan',
+      amount: '10',
+      status: '1',
+    },
+  ]);
 
   //   Handle the fields in the drop down list
   const handleChangeFields = (event) => {
@@ -238,6 +274,25 @@ function AutoGen(props) {
                     value='setConstraint'
                     control={<Radio />}
                     label='Set Constraint'
+                    onClick={() => {
+                      {
+                        constraint.map((d, i) => {
+                          constraint.shift(i, 1);
+                          setConstraint([...constraint]);
+                        });
+
+                        constraintList.map((c, i) => {
+                          let conListItem = {
+                            userEmail: c.userEmail,
+                            field: c.field,
+                            LTGT: c.LTGT,
+                            amount: c.amount,
+                          };
+                          constraint.push(conListItem);
+                          setConstraint([...constraint]);
+                        });
+                      }
+                    }}
                   />
                 </RadioGroup>
               </FormControl>
@@ -461,7 +516,7 @@ function AutoGen(props) {
               {constraint.map((r, i) => (
                 <tr className='constBox' style={{ height: '30px' }}>
                   <span style={{ fontSize: '20px' }}>
-                    Car ID: {r.selectedPLC} Where
+                    User Email: {r.userEmail} Where
                   </span>
                   <span>&nbsp;&nbsp;</span>
                   <span style={{ fontSize: '20px' }}>{r.field} is</span>
