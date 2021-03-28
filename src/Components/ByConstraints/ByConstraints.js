@@ -132,7 +132,7 @@ function ByConstraints() {
       >
         <div className='constBox'>
           {constraint.map((r, i) => (
-            <tr className='constBox'>
+            <tr className='constBox' style={{ height: '30px' }}>
               {' '}
               <span style={{ fontWeight: 'bold', fontSize: '20px' }}>
                 {r.field}

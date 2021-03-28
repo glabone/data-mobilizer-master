@@ -38,6 +38,7 @@ function AutoGen(props) {
   const [amount, setAmount] = useState('');
   const [constraint, setConstraint] = useState([]);
   const [trigger, setTrigger] = useState([]);
+  const [autoGen, setAutoGen] = useState([]);
 
   //   Handle the fields in the drop down list
   const handleChangeFields = (event) => {
@@ -74,7 +75,7 @@ function AutoGen(props) {
     }, []);
   }
 
-  //   This pull the value from the API and creates the PLC list
+  //   This pulls the value from the API and creates the PLC list
   useEffect(() => {
     const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/plc/alluniquecarid/`;
     fetch(apiUrl)
@@ -109,7 +110,7 @@ function AutoGen(props) {
         </h1>
       </div>
       {/* This is the Code for the template */}
-      <Grid container direction='row'>
+      <Grid container direction='row' alignItems='flex-start'>
         <div
           style={{
             height: '100%',
@@ -191,7 +192,8 @@ function AutoGen(props) {
 
         <Grid container direction='row' alignItems='flex-start'>
           <Grid item>
-            <div style={{ marginLeft: '500px', marginTop: '50px' }}>
+            <div style={{ marginLeft: '250px', marginTop: '50px' }}>
+              <h2>Select Interval</h2>
               <FormControl component='interval'>
                 <RadioGroup
                   aria-label='Interval'
@@ -217,7 +219,8 @@ function AutoGen(props) {
 
           {/* This is the second set of remote button for select all or by constraints */}
           <Grid item>
-            <div style={{ marginLeft: '50px', marginTop: '50px' }}>
+            <div style={{ marginLeft: '200px', marginTop: '50px' }}>
+              <h2>Select Contents of Report</h2>
               <FormControl component='constraint'>
                 <RadioGroup
                   aria-label='Constraints'
@@ -232,7 +235,7 @@ function AutoGen(props) {
                   />
 
                   <FormControlLabel
-                    value='setConstaint'
+                    value='setConstraint'
                     control={<Radio />}
                     label='Set Constraint'
                   />
@@ -241,27 +244,63 @@ function AutoGen(props) {
             </div>
           </Grid>
         </Grid>
-
-        {/* This is a Grid with the Select car ID, Select fields, select LTGT, enter amount */}
-
-        <Grid container direction='row' alignItems='flex-start'>
-          {/* This is where the select Car ID starts */}
-
+        {radioCon === 'selectAll' ? (
           <Grid item>
-            <div>
-              <div style={{ marginLeft: '250px', marginBottom: '30px' }}>
+            {/* <div style={{ marginLeft: '250px', marginBottom: '30px' }}>
                 <h2>Select Car ID</h2>
-              </div>
+              </div> */}
+            <div style={{ marginLeft: '250px' }}>
+              <FormControl
+                style={{ marginTop: '50px', width: '180px' }}
+                variant='outlined'
+                className='plcSelect'
+              >
+                <InputLabel id='selected Car Id'>Selected Car ID</InputLabel>
+                <Select
+                  labelId=''
+                  id=''
+                  name='plc'
+                  value={selectedPLC}
+                  cursor='pointer'
+                  label='selected Car Id'
+                  //   className='customSelect'
+                  onChange={(event) => {
+                    setTheme({ main: 'rgb(181, 247, 162)' });
+                    setSelectedPLC(event.target.value);
+                  }}
+                >
+                  {uniquePlcs.map((u) => {
+                    return (
+                      <MenuItem value={u} className='customOption'>
+                        {u}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+          </Grid>
+        ) : null}
+        {/* This is a Grid with the Select car ID, Select fields, select LTGT, enter amount */}
+        {radioCon === 'setConstraint' ? (
+          <Grid container direction='row' alignItems='flex-start'>
+            {/* This is where the select Car ID starts */}
+
+            <Grid item>
               <div style={{ marginLeft: '250px' }}>
                 <FormControl
-                  style={{ width: 150 }}
+                  style={{ marginTop: '50px', width: '180px' }}
                   variant='outlined'
                   className='plcSelect'
                 >
+                  <InputLabel id='selected Car Id'>Selected Car ID</InputLabel>
                   <Select
+                    labelId=''
+                    id=''
                     name='plc'
                     value={selectedPLC}
                     cursor='pointer'
+                    label='selected Car Id'
                     //   className='customSelect'
                     onChange={(event) => {
                       setTheme({ main: 'rgb(181, 247, 162)' });
@@ -278,184 +317,194 @@ function AutoGen(props) {
                   </Select>
                 </FormControl>
               </div>
-            </div>
-          </Grid>
+            </Grid>
 
-          {/* Select Field */}
+            {/* Select Field */}
 
-          <Grid item>
-            <div
-              className='fields'
-              style={{ marginLeft: '50px', marginTop: '100px' }}
-            >
-              <FormControl
-                style={{ width: 150 }}
-                variant='outlined'
+            <Grid item>
+              <div
                 className='fields'
+                style={{ marginLeft: '50px', marginTop: '50px' }}
               >
-                <InputLabel id='selectFields'>Select Field</InputLabel>
-                <Select
-                  labelId=''
-                  id=''
-                  value={field}
-                  onChange={handleChangeFields}
-                  label='selectFields'
-                >
-                  <MenuItem value={'Flow Rate'}>Flow Rate(L/min)</MenuItem>
-                  <MenuItem value={'Range'}>Range(mm)</MenuItem>
-                  <MenuItem value={'Temperature'}>Temperature(Deg C)</MenuItem>
-                  <MenuItem value={'Density'}>Density(kg/m^3)</MenuItem>
-                  <MenuItem value={'Net Volume'}>Net Volume(L)</MenuItem>
-                  <MenuItem value={'Pressure'}>Pressure(kPa)</MenuItem>
-                  <MenuItem value={'Outage'}>Outage(in)</MenuItem>
-                  <MenuItem value={'Gross Volume'}>Gross Volume(L)</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          </Grid>
-
-          {/* Select Less than or Greater than */}
-
-          <Grid item>
-            <div
-              className=''
-              style={{ marginLeft: '50px', marginTop: '100px' }}
-            >
-              <FormControl
-                style={{ width: 150 }}
-                variant='outlined'
-                className='LTGT'
-              >
-                <InputLabel id='select'>Select</InputLabel>
-                <Select
-                  labelId=''
-                  id=''
-                  value={LTGT}
-                  onChange={handleChangeLTGT}
-                  label='LTGT'
-                >
-                  <MenuItem value={'Less Than'}>Less Than</MenuItem>
-                  <MenuItem value={'Greater Than'}>Greater Than</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          </Grid>
-
-          {/* Text Field for the amount */}
-
-          <Grid item>
-            <div style={{ marginLeft: '50px', marginTop: '100px' }}>
-              <form className='' noValidate autoComplete='off'>
-                <TextField
-                  id='amount'
-                  label='Enter Target Constraint'
+                <FormControl
+                  style={{ width: 150 }}
                   variant='outlined'
-                  value={amount}
-                  onChange={handleChangeAmount}
-                />
-              </form>
-            </div>
-          </Grid>
-        </Grid>
+                  className='fields'
+                >
+                  <InputLabel id='selectFields'>Select Field</InputLabel>
+                  <Select
+                    labelId=''
+                    id=''
+                    value={field}
+                    onChange={handleChangeFields}
+                    label='selectFields'
+                  >
+                    <MenuItem value={'Flow Rate'}>Flow Rate(L/min)</MenuItem>
+                    <MenuItem value={'Range'}>Range(mm)</MenuItem>
+                    <MenuItem value={'Temperature'}>
+                      Temperature(Deg C)
+                    </MenuItem>
+                    <MenuItem value={'Density'}>Density(kg/m^3)</MenuItem>
+                    <MenuItem value={'Net Volume'}>Net Volume(L)</MenuItem>
+                    <MenuItem value={'Pressure'}>Pressure(kPa)</MenuItem>
+                    <MenuItem value={'Outage'}>Outage(in)</MenuItem>
+                    <MenuItem value={'Gross Volume'}>Gross Volume(L)</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            </Grid>
 
+            {/* Select Less than or Greater than */}
+
+            <Grid item>
+              <div
+                className=''
+                style={{ marginLeft: '50px', marginTop: '50px' }}
+              >
+                <FormControl
+                  style={{ width: 150 }}
+                  variant='outlined'
+                  className='LTGT'
+                >
+                  <InputLabel id='select'>Select</InputLabel>
+                  <Select
+                    labelId=''
+                    id=''
+                    value={LTGT}
+                    onChange={handleChangeLTGT}
+                    label='LTGT'
+                  >
+                    <MenuItem value={'Less Than'}>Less Than</MenuItem>
+                    <MenuItem value={'Greater Than'}>Greater Than</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            </Grid>
+
+            {/* Text Field for the amount */}
+
+            <Grid item>
+              <div style={{ marginLeft: '50px', marginTop: '50px' }}>
+                <form className='' noValidate autoComplete='off'>
+                  <TextField
+                    id='amount'
+                    label='Enter Target Constraint'
+                    variant='outlined'
+                    value={amount}
+                    onChange={handleChangeAmount}
+                  />
+                </form>
+              </div>
+            </Grid>
+          </Grid>
+        ) : null}
         {/* This is where the constraint Box starts. 
         First the add constraint button and then the constraint box */}
-
-        <Grid container direction='row' alignItems='flex-start'>
-          <div style={{ marginLeft: '250px', marginBottom: '10px' }}>
-            {field != '' && LTGT != '' && amount != '' ? (
-              <button
-                className='addConstBtn'
-                type='submit'
-                onClick={() => {
-                  let con = {
-                    field,
-                    LTGT,
-                    amount,
-                  };
-                  constraint.push(con);
-                  setConstraint([...constraint]);
-                }}
-              >
-                Add Constraint
-              </button>
-            ) : (
-              <button
-                disabled
-                className='addConstBtn'
-                style={{
-                  backgroundColor: ' lightgray',
-                  cursor: 'not-allowed',
-                }}
-              >
-                Add Constraint
-              </button>
-            )}
-          </div>
-        </Grid>
-        <Grid
-          container
-          direction='row'
-          alignItems='flex-start'
-          style={{ width: 700 }}
-        >
-          {' '}
-          <h2
-            style={{
-              marginLeft: '250px',
-              marginBottom: '10px',
-            }}
-          >
-            List of Constraints
-          </h2>
-          <div
-            className='constBox'
-            style={{
-              marginLeft: '250px',
-              marginBottom: '45px',
-            }}
-          >
-            {constraint.map((r, i) => (
-              <tr className='constBox'>
-                {' '}
-                <span style={{ fontSize: '20px' }}>{r.field}</span>
-                <span>&nbsp;&nbsp;</span>
-                <span style={{ fontSize: '20px' }}>{r.LTGT}</span>
-                <span>&nbsp;&nbsp;</span>
-                <span
-                  style={{
-                    fontSize: '20px',
-                  }}
-                >
-                  {r.amount}
-                </span>{' '}
+        {radioCon === 'setConstraint' ? (
+          <Grid container direction='row' alignItems='flex-start'>
+            <div style={{ marginLeft: '250px', marginBottom: '10px' }}>
+              {field != '' && LTGT != '' && amount != '' ? (
                 <button
-                  className='removeBtn'
-                  onClick={(e) => {
-                    constraint.splice(i, 1);
+                  className='addConstBtn'
+                  type='submit'
+                  onClick={() => {
+                    let con = {
+                      selectedPLC,
+                      field,
+                      LTGT,
+                      amount,
+                    };
+                    constraint.push(con);
                     setConstraint([...constraint]);
                   }}
-                  style={{ marginLeft: '10px' }}
                 >
-                  Remove
+                  Add Constraint
                 </button>
-              </tr>
-            ))}
-          </div>
-        </Grid>
+              ) : (
+                <button
+                  disabled
+                  className='addConstBtn'
+                  style={{
+                    backgroundColor: ' lightgray',
+                    cursor: 'not-allowed',
+                  }}
+                >
+                  Add Constraint
+                </button>
+              )}
+            </div>
+          </Grid>
+        ) : null}
+        {radioCon === 'setConstraint' ? (
+          <Grid
+            container
+            direction='row'
+            alignItems='flex-start'
+            style={{ width: '80%' }}
+          >
+            {' '}
+            <h2
+              style={{
+                marginLeft: '250px',
+                marginBottom: '10px',
+              }}
+            >
+              List of Constraints
+            </h2>
+            <div
+              className='constBox'
+              style={{
+                marginLeft: '250px',
+                marginBottom: '5px',
+              }}
+            >
+              {constraint.map((r, i) => (
+                <tr className='constBox' style={{ height: '30px' }}>
+                  <span style={{ fontSize: '20px' }}>
+                    Car ID: {r.selectedPLC} Where
+                  </span>
+                  <span>&nbsp;&nbsp;</span>
+                  <span style={{ fontSize: '20px' }}>{r.field} is</span>
+                  <span>&nbsp;&nbsp;</span>
+                  <span style={{ fontSize: '20px' }}>{r.LTGT}</span>
+                  <span>&nbsp;&nbsp;</span>
+                  <span
+                    style={{
+                      fontSize: '20px',
+                    }}
+                  >
+                    {r.amount}
+                  </span>{' '}
+                  <button
+                    className='removeBtn'
+                    onClick={(e) => {
+                      constraint.splice(i, 1);
+                      setConstraint([...constraint]);
+                    }}
+                    style={{ marginLeft: '10px' }}
+                  >
+                    Remove
+                  </button>
+                </tr>
+              ))}
+            </div>{' '}
+          </Grid>
+        ) : null}
 
         {/* This is the end of the constraints box section */}
 
         <Grid container direction='row' alignItems='flex-start'>
-          <div style={{ marginLeft: '250px', marginBottom: '50px' }}>
+          <div style={{ marginLeft: '250px' }}>
             <br />
             {selectedPLC != undefined && selectedPLC != '' ? (
               <button
                 className='addReportBtn'
                 type='submit'
                 onClick={() => {
+                  // {radioCon === 'selectAll' ? (): null }
                   let trig = {
                     carId: selectedPLC,
+                    interval: radioInt,
                   };
                   trigger.push(trig);
                   setTrigger([...trigger]);
@@ -478,12 +527,17 @@ function AutoGen(props) {
           </div>
         </Grid>
         {/* This is the start of the Reports box at the bottom */}
-        <Grid direction='row' alignItems='flex-start'>
-          <h2>List of Reports</h2>
+        <Grid
+          container
+          direction='row'
+          alignItems='flex-start'
+          style={{ width: '80%' }}
+        >
+          <h2 style={{ marginLeft: '250px' }}>List of Reports</h2>
           <div className='BottomDiv'>
             {trigger.map((r, i) => (
               <tr className='liBottomDiv'>
-                PLC ID :{' '}
+                Car ID :{' '}
                 <span
                   style={{ color: 'rgb(73, 132, 243)', fontWeight: 'bold' }}
                 >
@@ -493,7 +547,7 @@ function AutoGen(props) {
                 <span
                   style={{ color: 'rgb(73, 132, 243)', fontWeight: 'bold' }}
                 >
-                  {radioInt}
+                  {r.interval}
                 </span>
                 {/*
                 <span>&nbsp;&nbsp;</span> To Date :
@@ -520,11 +574,14 @@ function AutoGen(props) {
               </tr>
             ))}
           </div>{' '}
-          <Grid alignItems='flex-start'>
+          <Grid container direction='row' alignItems='flex-start'>
             {selectedPLC != undefined && selectedPLC != '' ? (
               <button
                 className='GenerateBTN'
-                style={{ height: '50px' }}
+                style={{
+                  marginLeft: '250px',
+                  marginBottom: '10px',
+                }}
                 type='submit'
                 onClick={(e) => {
                   e.preventDefault();

@@ -389,31 +389,31 @@ function Dashboard(props) {
             </div>
           </div> */}
 
-        <Grid direction='column' alignItems='flex-start'>
-          <div className='BottomDiv'>
+        <Grid
+          container
+          direction='row'
+          alignItems='flex-start'
+          style={{ width: 1000 }}
+        >
+          <div
+            className='BottomDiv'
+            style={{
+              marginLeft: '250px',
+              marginBottom: '10px',
+            }}
+          >
             {trigger.map((r, i) => (
               <tr className='liBottomDiv'>
                 PLC ID :{' '}
-                <span
-                  style={{ color: 'rgb(73, 132, 243)', fontWeight: 'bold' }}
-                >
+                <span span style={{ fontSize: '20px' }}>
                   {r.carId}
                 </span>
                 <span>&nbsp;&nbsp;</span> From Date :
-                <span
-                  style={{ color: 'rgb(73, 132, 243)', fontWeight: 'bold' }}
-                >
+                <span span style={{ fontSize: '20px' }}>
                   {r.startDate}
                 </span>
                 <span>&nbsp;&nbsp;</span> To Date :
-                <span
-                  style={{
-                    color: 'rgb(73, 132, 243)',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {r.finishDate}
-                </span>{' '}
+                <span style={{ fontSize: '20px' }}>{r.finishDate}</span>{' '}
                 {/* <span>&nbsp;&nbsp;</span> <span>&nbsp;&nbsp;</span>{" "}
                 <span>&nbsp;&nbsp;</span> */}
                 <button
@@ -429,14 +429,14 @@ function Dashboard(props) {
               </tr>
             ))}
           </div>{' '}
-          <Grid alignItems='flex-start'>
-            {selectedPLC != undefined &&
-            selectedPLC != '' &&
-            fromDate != undefined &&
-            toDate != undefined ? (
+          <Grid container direction='row' alignItems='flex-start'>
+            {selectedPLC != undefined && selectedPLC != '' ? (
               <button
                 className='GenerateBTN'
-                style={{ height: '50px' }}
+                style={{
+                  marginLeft: '250px',
+                  marginBottom: '10px',
+                }}
                 type='submit'
                 onClick={(e) => {
                   e.preventDefault();
