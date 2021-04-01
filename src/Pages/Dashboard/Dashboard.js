@@ -448,9 +448,10 @@ function Dashboard(props) {
                     user_id: user_id,
                     car_id: selectedPLC,
                   };
-                  triList.push(tri);
+
                   console.log(tri);
-                  setTriList([...triList]);
+                  // setTriList([...triList]);
+                  triList.push(tri);
                   console.log(triList);
 
                   // fetch(REST_API_URL, {
@@ -617,26 +618,29 @@ function Dashboard(props) {
                     type="submit"
                     onClick={(e) => {
                       e.preventDefault();
-                      fetch(apiUrl, {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
+                      console.log(triList.length);
+                      {
+                        triList.map((a) => {
+                          fetch(apiUrl, {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
 
-                        body: JSON.stringify(triList),
-                      })
-                        .then((response) => {
-                          if (response.ok) {
-                            console.log(triList[0]);
-                          } else {
-                            console.log(triList[0]);
-                            throw new Error("Something went wrong");
-                          }
-                        })
-                        .catch((error) => {
-                          // HANDLE ERROR
-                          console.log(error);
+                            body: JSON.stringify(a),
+                          })
+                            .then((response) => {
+                              if (response.ok) {
+                              } else {
+                                throw new Error("Something went wrong");
+                              }
+                            })
+                            .catch((error) => {
+                              // HANDLE ERROR
+                              console.log(error);
+                            });
                         });
+                      }
 
                       {
                         window.open(
@@ -666,13 +670,38 @@ function Dashboard(props) {
                     onClick={(e) => {
                       e.preventDefault();
                       {
+                        triList.map((a) => {
+                          fetch(apiUrl, {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+
+                            body: JSON.stringify(a),
+                          })
+                            .then((response) => {
+                              if (response.ok) {
+                              } else {
+                                throw new Error("Something went wrong");
+                              }
+                            })
+                            .catch((error) => {
+                              // HANDLE ERROR
+                              console.log(error);
+                            });
+                        });
+                      }
+
+                      {
                         window.open(
                           "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=" +
                             r.carId +
                             "&startDate=" +
                             r.startDate +
                             "&finishDate=" +
-                            r.finishDate
+                            r.finishDate +
+                            "&userEmail=" +
+                            userEmail
                         );
                       }
                     }}
@@ -701,7 +730,7 @@ function Dashboard(props) {
             </table>
           ))}
         </div>{" "}
-        <div>
+        {/* <div>
           {selectedPLC != undefined &&
           selectedPLC != "" &&
           fromDate != undefined &&
@@ -784,7 +813,7 @@ function Dashboard(props) {
               Export Excel File
             </button>
           )}
-        </div>
+        </div> */}
         <div style={{ marginBottom: "100px" }}></div>
       </Grid>
     </>
