@@ -54,8 +54,8 @@ function Dashboard(props) {
   const [constraint, setConstraint] = useState([]);
   const [tri, setTri] = useState({});
   const [triList, setTriList] = useState([]);
-
   let [uniquePlcs, setUniquePlcs] = useState([]);
+  let [picked, setPicked] = useState(false);
   let [dataTypes, setDataTypes] = useState([]);
   let [conditions, setConditions] = useState([]);
   let [constraintId, setConstraintId] = useState([]);
@@ -547,7 +547,7 @@ function Dashboard(props) {
                     finishDate: toDate,
                     constraintArray: [...constraint],
                   };
-                  console.log(constraintId);
+                  console.log(trig.constraintArray);
                   trigger.push(trig);
 
                   setTrigger([...trigger]);
@@ -644,7 +644,7 @@ function Dashboard(props) {
                       }
 
                       {
-                        if (constraint.length > 0) {
+                        if (r.constraintArray.length > 0) {
                           window.open(
                             "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
                               r.carId +
@@ -705,7 +705,7 @@ function Dashboard(props) {
                       }
 
                       {
-                        if (constraint.length > 0) {
+                        if (r.constraintArray.length > 0) {
                           window.open(
                             "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=" +
                               r.carId +
