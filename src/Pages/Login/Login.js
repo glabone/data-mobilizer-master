@@ -126,8 +126,7 @@ const LoginFormik = withFormik({
             localStorage.setItem("token", false);
           } else {
             setToken.props.setToken(undefined);
-            alert("User Not Active ");
-            console.log("user is not an admin and not active");
+            alert("Not an Active User ");
           }
         } else {
           setToken.props.setToken(undefined);

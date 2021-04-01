@@ -52,9 +52,13 @@ function Dashboard(props) {
   const [toDate, setToDate] = useState(null);
   const [trigger, setTrigger] = useState([]);
   const [constraint, setConstraint] = useState([]);
+  const [tri, setTri] = useState({});
+  const [triList, setTriList] = useState([]);
+
   let [uniquePlcs, setUniquePlcs] = useState([]);
   let [dataTypes, setDataTypes] = useState([]);
   let [conditions, setConditions] = useState([]);
+  let [constraintId, setConstraintId] = useState([]);
   let constr = {};
   let [fieldTypeLookUp, setFieldTypeLookUp] = useState(new Map());
   let [conditionLookUp, setConditionLookUp] = useState(new Map());
@@ -70,6 +74,7 @@ function Dashboard(props) {
   const [user_id, setUser_id] = useState(
     localStorage.getItem("userLoggedIn") || ""
   );
+  const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint/`;
   const REST_API_URL =
     "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint/";
   const handleChange = (event) => {
@@ -90,6 +95,14 @@ function Dashboard(props) {
         setUniquePlcs(plcs);
       });
   }, []);
+
+  // useEffect(() => {
+  //   fetch(apiUrl)
+  //     .then((res) => res.json())
+  //     .then((constraintId) => {
+  //       setConstraintId(constraintId);
+  //     });
+  // }, []);
 
   useEffect(() => {
     const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/data_type/`;
@@ -435,25 +448,29 @@ function Dashboard(props) {
                     user_id: user_id,
                     car_id: selectedPLC,
                   };
+                  triList.push(tri);
+                  console.log(tri);
+                  setTriList([...triList]);
+                  console.log(triList);
 
-                  fetch(REST_API_URL, {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
+                  // fetch(REST_API_URL, {
+                  //   method: "POST",
+                  //   headers: {
+                  //     "Content-Type": "application/json",
+                  //   },
 
-                    body: JSON.stringify(tri),
-                  })
-                    .then((response) => {
-                      if (response.ok) {
-                      } else {
-                        throw new Error("Something went wrong");
-                      }
-                    })
-                    .catch((error) => {
-                      // HANDLE ERROR
-                      console.log(error);
-                    });
+                  //   body: JSON.stringify(tri),
+                  // })
+                  //   .then((response) => {
+                  //     if (response.ok) {
+                  //     } else {
+                  //       throw new Error("Something went wrong");
+                  //     }
+                  //   })
+                  //   .catch((error) => {
+                  //     // HANDLE ERROR
+                  //     console.log(error);
+                  //   });
                   constraint.push(constr);
                   setConstraint([...constraint]);
                 }}
@@ -528,7 +545,7 @@ function Dashboard(props) {
                     finishDate: toDate,
                     constraintArray: [...constraint],
                   };
-                  console.log("uytfuyhgcihgc" + userEmail);
+                  console.log(constraintId);
                   trigger.push(trig);
 
                   setTrigger([...trigger]);
@@ -600,6 +617,27 @@ function Dashboard(props) {
                     type="submit"
                     onClick={(e) => {
                       e.preventDefault();
+                      fetch(apiUrl, {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+
+                        body: JSON.stringify(triList),
+                      })
+                        .then((response) => {
+                          if (response.ok) {
+                            console.log(triList[0]);
+                          } else {
+                            console.log(triList[0]);
+                            throw new Error("Something went wrong");
+                          }
+                        })
+                        .catch((error) => {
+                          // HANDLE ERROR
+                          console.log(error);
+                        });
+
                       {
                         window.open(
                           "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
@@ -607,10 +645,15 @@ function Dashboard(props) {
                             "&startDate=" +
                             r.startDate +
                             "&finishDate=" +
-                            r.finishDate
+                            r.finishDate +
+                            "&userEmail=" +
+                            userEmail
                         );
                       }
                     }}
+                    // constraintId.map((cId) => {
+                    //   fetch(apiUrl+"email=" + cId.id, { method: "Delete" });
+                    // });
                   >
                     Get PDF
                   </button>
@@ -670,6 +713,7 @@ function Dashboard(props) {
               onClick={(e) => {
                 e.preventDefault();
                 {
+                  console.log(constraintId);
                   trigger.map((t) => {
                     window.open(
                       "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
