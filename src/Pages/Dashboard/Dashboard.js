@@ -79,6 +79,7 @@ function Dashboard(props) {
     "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint/";
   const handleChange = (event) => {
     if (event.target.value === "allData") {
+      setConstraint([]);
       setFieldType("");
       setCondition("");
       setTargetField("");
@@ -643,16 +644,27 @@ function Dashboard(props) {
                       }
 
                       {
-                        window.open(
-                          "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
-                            r.carId +
-                            "&startDate=" +
-                            r.startDate +
-                            "&finishDate=" +
-                            r.finishDate +
-                            "&userEmail=" +
-                            userEmail
-                        );
+                        if (constraint.length > 0) {
+                          window.open(
+                            "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
+                              r.carId +
+                              "&startDate=" +
+                              r.startDate +
+                              "&finishDate=" +
+                              r.finishDate +
+                              "&userEmail=" +
+                              userEmail
+                          );
+                        } else {
+                          window.open(
+                            "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
+                              r.carId +
+                              "&startDate=" +
+                              r.startDate +
+                              "&finishDate=" +
+                              r.finishDate
+                          );
+                        }
                       }
                     }}
                     // constraintId.map((cId) => {
@@ -693,16 +705,27 @@ function Dashboard(props) {
                       }
 
                       {
-                        window.open(
-                          "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=" +
-                            r.carId +
-                            "&startDate=" +
-                            r.startDate +
-                            "&finishDate=" +
-                            r.finishDate +
-                            "&userEmail=" +
-                            userEmail
-                        );
+                        if (constraint.length > 0) {
+                          window.open(
+                            "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=" +
+                              r.carId +
+                              "&startDate=" +
+                              r.startDate +
+                              "&finishDate=" +
+                              r.finishDate +
+                              "&userEmail=" +
+                              userEmail
+                          );
+                        } else {
+                          window.open(
+                            "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=" +
+                              r.carId +
+                              "&startDate=" +
+                              r.startDate +
+                              "&finishDate=" +
+                              r.finishDate
+                          );
+                        }
                       }
                     }}
                   >
