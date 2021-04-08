@@ -1,17 +1,18 @@
-.BottomDiv {
-  width: 90%;
-  height: 200px;
+.AutoBottomDiv {
+  width: 800px;
+  height: 400px;
   border: solid rgb(11, 180, 95);
   margin-left: 250px;
   -ms-flex-align: start;
   overflow: auto;
 }
-.lilBottomDiv {
+.AutolilBottomDiv {
   height: 200px;
+  width: 800px;
   border: solid rgb(11, 180, 95);
   margin-left: 250px;
 }
-.addConstraintBtn {
+.AutoaddConstraintBtn {
   width: 175px;
   height: 35px;
   background-color: rgb(11, 180, 95);
@@ -19,12 +20,12 @@
 
   cursor: pointer;
 }
-.addConstraintBtn:hover {
+.AutoaddConstraintBtn:hover {
   background-color: rgb(201, 245, 223);
   color: rgb(35, 46, 40);
   font-weight: bold;
 }
-.removeBtn {
+.AutoremoveBtn {
   width: 125px;
   height: 35px;
   background-color: rgb(11, 180, 95);
@@ -32,8 +33,47 @@
 
   cursor: pointer;
 }
-.removeBtn:hover {
+.AutoremoveBtn:hover {
   background-color: rgb(201, 245, 223);
   color: rgb(35, 46, 40);
   font-weight: bold;
+}
+.AutoconstBox {
+  width: 800px;
+  height: 250px;
+  border: solid rgb(11, 180, 95);
+  margin-left: 250px;
+  -ms-flex-align: start;
+  overflow: auto;
+}
+.AutoGenerateBTN {
+  width: 200px;
+  height: 40px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+  margin-top: 30px;
+  cursor: pointer;
+}
+.AutoGenerateBTN:hover {
+  background-color: rgb(201, 245, 223);
+  color: rgb(35, 46, 40);
+  font-weight: bold;
+}
+
+.AutoaddReportBtn {
+  width: 200px;
+  height: 40px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.AutoaddConstBtn {
+  width: 200px;
+  height: 40px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+  margin-top: 30px;
+  cursor: pointer;
 }

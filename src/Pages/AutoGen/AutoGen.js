@@ -389,8 +389,6 @@ function AutoGen(props) {
               </FormControl>
             </div>
           </Grid>
-        </Grid>
-        {radioCon === 'selectAll' ? (
           <Grid item>
             {/* <div style={{ marginLeft: '250px', marginBottom: '30px' }}>
                 <h2>Select Car ID</h2>
@@ -426,13 +424,48 @@ function AutoGen(props) {
               </FormControl>
             </div>
           </Grid>
-        ) : null}
+        </Grid>
+        {/* {radioCon === 'selectAll' ? (
+          <Grid item>
+            
+            <div style={{ marginLeft: '250px' }}>
+              <FormControl
+                style={{ marginTop: '50px', width: '180px' }}
+                variant='outlined'
+                className='plcSelect'
+              >
+                <InputLabel id='selected Car Id'>Selected Car ID</InputLabel>
+                <Select
+                  labelId=''
+                  id=''
+                  name='plc'
+                  value={selectedPLC}
+                  cursor='pointer'
+                  label='selected Car Id'
+                  //   className='customSelect'
+                  onChange={(event) => {
+                    setTheme({ main: 'rgb(181, 247, 162)' });
+                    setSelectedPLC(event.target.value);
+                  }}
+                >
+                  {uniquePlcs.map((u) => {
+                    return (
+                      <MenuItem value={u} className='customOption'>
+                        {u}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+          </Grid>
+        ) : null} */}
         {/* This is a Grid with the Select car ID, Select fields, select LTGT, enter amount */}
         {radioCon === 'setConstraint' ? (
           <Grid container direction='row' alignItems='flex-start'>
             {/* This is where the select Car ID starts */}
 
-            <Grid item>
+            {/* <Grid item>
               <div style={{ marginLeft: '250px' }}>
                 <FormControl
                   style={{ marginTop: '50px', width: '180px' }}
@@ -463,12 +496,12 @@ function AutoGen(props) {
                   </Select>
                 </FormControl>
               </div>
-            </Grid>
+            </Grid> */}
 
             {/* Select Field */}
 
             <Grid item>
-              <div style={{ marginLeft: '50px', marginTop: '50px' }}>
+              <div style={{ marginLeft: '250px', marginTop: '50px' }}>
                 <FormControl
                   style={{ width: 200 }}
                   variant='outlined'
@@ -564,16 +597,22 @@ function AutoGen(props) {
           <Grid container direction='row' alignItems='flex-start'>
             <div style={{ marginLeft: '250px', marginBottom: '10px' }}>
               {fieldType != '' && condition != '' && amount != '' ? (
-                <button
+                <Button
                   className='addConstBtn'
                   type='submit'
+                  variant='outlined'
+                  style={{
+                    backgroundColor: '#00c853',
+                    marginTop: '20px',
+                    width: '250px',
+                  }}
                   onClick={(e) => {
                     let con = {
                       user_id: userId,
                       data_type_id: fieldType,
                       clause_id: condition,
                       value: amount,
-                      LTGL: LTGT,
+                      status: '1',
                     };
                     newConstraint.push(con);
                     setNewConstraint([...newConstraint]);
@@ -595,6 +634,7 @@ function AutoGen(props) {
                             data_type_id: t.data_type_id,
                             clause_id: t.clause_id,
                             value: t.value,
+                            status: t.status,
                           }),
                         })
                           .then((response) => {
@@ -620,19 +660,22 @@ function AutoGen(props) {
                     setConstraint([...constraint]);
                   }}
                 >
-                  Add Constraint
-                </button>
+                  Add New Constraint
+                </Button>
               ) : (
-                <button
+                <Button
+                  variant='outlined'
                   disabled
                   className='addConstBtn'
                   style={{
                     backgroundColor: ' lightgray',
                     cursor: 'not-allowed',
+                    marginTop: '20px',
+                    width: '250px',
                   }}
                 >
-                  Add Constraint
-                </button>
+                  Add New Constraint
+                </Button>
               )}
             </div>
           </Grid>
@@ -654,7 +697,7 @@ function AutoGen(props) {
               List of Constraints
             </h2>
             <div
-              className='constBox'
+              className='AutoconstBox'
               style={{
                 marginLeft: '250px',
                 marginBottom: '5px',
@@ -706,7 +749,7 @@ function AutoGen(props) {
                               {' Constraint ID: ' + r.id}
                             </div>
                           </Grid>
-                          <Grid item>
+                          <Grid item justify='flex-end'>
                             <ButtonGroup
                               style={{ margin: '2px' }}
                               size='small'
@@ -715,6 +758,7 @@ function AutoGen(props) {
                               <Button
                                 variant='outlined'
                                 startIcon={<SaveIcon />}
+                                disabled={false}
                                 style={{
                                   backgroundColor: '#00c853',
                                 }}
@@ -731,7 +775,7 @@ function AutoGen(props) {
                               <Button
                                 variant='outlined'
                                 style={{
-                                  backgroundColor: '#c62828',
+                                  backgroundColor: '#f44336',
                                 }}
                                 startIcon={<DeleteIcon />}
                                 onClick={(e) => {
@@ -764,9 +808,13 @@ function AutoGen(props) {
             selectedPLC != '' &&
             radioCon === 'selectAll' &&
             radioInt != '' ? (
-              <button
-                className='addReportBtn'
+              <Button
+                className='AutoaddReportBtn'
                 type='submit'
+                variant='outlined'
+                style={{
+                  backgroundColor: '#00c853',
+                }}
                 onClick={() => {
                   let trig = {
                     // id: 4,
@@ -781,16 +829,20 @@ function AutoGen(props) {
                 }}
               >
                 Add Report
-              </button>
+              </Button>
             ) : null}
 
             {selectedPLC != undefined &&
             selectedPLC != '' &&
             radioCon === 'setConstraint' &&
             radioInt != '' ? (
-              <button
-                className='addReportBtn'
+              <Button
+                className='AutoaddReportBtn'
                 type='submit'
+                variant='outlined'
+                style={{
+                  backgroundColor: '#00c853',
+                }}
                 onClick={() => {
                   let trig = {
                     car_id: selectedPLC,
@@ -805,7 +857,7 @@ function AutoGen(props) {
                 }}
               >
                 Add Report
-              </button>
+              </Button>
             ) : null}
           </div>
         </Grid>
@@ -817,7 +869,7 @@ function AutoGen(props) {
           style={{ width: '80%' }}
         >
           <h2 style={{ marginLeft: '250px' }}>List of Reports</h2>
-          <div className='BottomDiv'>
+          <div className='AutoBottomDiv'>
             {newTrigger.map((r, i) => (
               <>
                 {r.user_id == userId ? (
@@ -852,7 +904,7 @@ function AutoGen(props) {
                             }}
                             style={{
                               margin: '2px',
-                              backgroundColor: '#c62828',
+                              backgroundColor: '#f44336',
                             }}
                             variant='outlined'
                             startIcon={<DeleteIcon />}
@@ -894,7 +946,7 @@ function AutoGen(props) {
                         <Grid item>
                           <Button
                             style={{
-                              backgroundColor: '#c62828',
+                              backgroundColor: '#f44336',
                               margin: '2px',
                             }}
                             variant='outlined'
@@ -916,11 +968,14 @@ function AutoGen(props) {
           </div>{' '}
           <Grid container direction='row' alignItems='flex-start'>
             {selectedPLC != undefined && selectedPLC != '' ? (
-              <button
-                className='GenerateBTN'
+              <Button
+                className='AutoGenerateBTN'
+                variant='outlined'
                 style={{
                   marginLeft: '250px',
                   marginBottom: '10px',
+                  marginTop: '10px',
+                  backgroundColor: '#00c853',
                 }}
                 type='submit'
                 onClick={(e) => {
@@ -959,19 +1014,22 @@ function AutoGen(props) {
                 }}
               >
                 Schedule Reports
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 disabled
-                className='GenerateBTN'
+                className='AutoGenerateBTN'
+                variant='outlined'
                 style={{
                   height: '50px',
-                  backgroundColor: ' lightgray',
+                  backgroundColor: 'gray',
                   cursor: 'not-allowed',
+                  marginLeft: '250px',
+                  marginTop: '10px',
                 }}
               >
-                Generate Report
-              </button>
+                Schedule Reports
+              </Button>
             )}
           </Grid>
         </Grid>
