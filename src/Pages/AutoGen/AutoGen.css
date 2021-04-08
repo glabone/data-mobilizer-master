@@ -1,7 +1,39 @@
 .BottomDiv {
+  width: 90%;
   height: 200px;
   border: solid rgb(11, 180, 95);
   margin-left: 250px;
+  -ms-flex-align: start;
+  overflow: auto;
+}
+.lilBottomDiv {
+  height: 200px;
+  border: solid rgb(11, 180, 95);
+  margin-left: 250px;
+}
+.addConstraintBtn {
+  width: 175px;
+  height: 35px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
 
-  /* margin-right: auto; */
+  cursor: pointer;
+}
+.addConstraintBtn:hover {
+  background-color: rgb(201, 245, 223);
+  color: rgb(35, 46, 40);
+  font-weight: bold;
+}
+.removeBtn {
+  width: 125px;
+  height: 35px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+
+  cursor: pointer;
+}
+.removeBtn:hover {
+  background-color: rgb(201, 245, 223);
+  color: rgb(35, 46, 40);
+  font-weight: bold;
 }

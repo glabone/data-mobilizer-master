@@ -24,57 +24,78 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import { rgbToHex, TableRow } from '@material-ui/core';
+import './AutoGen.css';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import SaveIcon from '@material-ui/icons/Save';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+const useStyles = makeStyles((theme, themeTwo, themeThree) => ({
+  // container: {
+  //   display: 'flex',
+  //   flexWrap: 'wrap',
+  // },
+  // textField: {
+  //   marginLeft: theme.spacing(0),
+  //   marginRight: theme.spacing(0),
+  //   width: 200,
+  // },
+  // formControl: {
+  //   marginLeft: theme.spacing(0),
+  //   marginRight: theme.spacing(10),
+  //   marginTop: theme.spacing(6),
+  //   minWidth: 120,
+  // },
+  // selectEmpty: {
+  //   marginTop: theme.spacing(4),
+  // },
+}));
 
 function AutoGen(props) {
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') || 0);
   let [uniquePlcs, setUniquePlcs] = useState([]);
   const { setToken } = props;
   let [theme, setTheme] = useState({ main: ' rgba(211, 211, 211, 0.8);' });
-  let [firstConList, setFirstConList] = useState(0);
+
   const [selectedPLC, setSelectedPLC] = useState('');
   const [radioInt, setRadioInt] = useState('');
   const [radioCon, setRadioCon] = useState('');
   const [field, setField] = useState('');
   const [LTGT, setLTGT] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+
+  let [dataTypes, setDataTypes] = useState([]);
+  let [conditions, setConditions] = useState([]);
+  let constr = {};
+  let [fieldTypeLookUp, setFieldTypeLookUp] = useState(new Map());
+  let [conditionLookUp, setConditionLookUp] = useState(new Map());
+  let [intervalLookUp, setIntervalLookUp] = useState(new Map());
+  const [value, setValue] = useState('allData');
+  const [fieldType, setFieldType] = useState('');
+  const [fieldTypeId, setFieldTypeId] = useState(0);
+  const [condition, setCondition] = useState('');
+  const [intervals, setIntervals] = useState([]);
+  const [interval, setInterval] = useState({});
+  const [targetField, setTargetField] = useState('');
+  const [userEmail, setUserEmail] = useState(
+    localStorage.getItem('userEmail') || ''
+  );
+  const [userId, setUserId] = useState(
+    localStorage.getItem('userLoggedIn') || ''
+  );
+
+  const [conId, setConId] = useState('');
   const [amount, setAmount] = useState('');
   const [constraint, setConstraint] = useState([]);
+  const [newConstraint, setNewConstraint] = useState([]);
   const [trigger, setTrigger] = useState([]);
+  const [newTrigger, setNewTrigger] = useState([]);
+  const [constraintIdList, setConstraintIdList] = useState([]);
   const [autoGen, setAutoGen] = useState([]);
-  const [constraintList, setConstraintList] = useState([
-    {
-      id: '1',
-      userEmail: 'test@test.com',
-      field: 'flowRate',
-      LTGT: 'greaterThan',
-      amount: '10',
-      status: '1',
-    },
-    {
-      id: '2',
-      userEmail: 'test@test.com',
-      field: 'pressure',
-      LTGT: 'lessThan',
-      amount: '200',
-      status: '1',
-    },
-    {
-      id: '3',
-      userEmail: 'test@test.com',
-      field: 'temperature',
-      LTGT: 'greaterThan',
-      amount: '20',
-      status: '1',
-    },
-    {
-      id: '4',
-      userEmail: 'admin@a.com',
-      field: 'flowRate',
-      LTGT: 'greaterThan',
-      amount: '10',
-      status: '1',
-    },
-  ]);
+  const [constraintCheckBox, setConstraintCheckBox] = useState([]);
+  const [scheduleList, setScheduleList] = useState([]);
+  const [checked, setChecked] = useState('');
+  const [constraintList, setConstraintList] = useState([]);
 
   //   Handle the fields in the drop down list
   const handleChangeFields = (event) => {
@@ -96,9 +117,20 @@ function AutoGen(props) {
     setLTGT(event.target.value);
   };
 
+  const handleChangeConstraintList = (event) => {
+    setConstraint(constraintList);
+  };
+
   //   Handles the amount for the constraint
   const handleChangeAmount = (event) => {
     setAmount(event.target.value);
+  };
+
+  const handleChangeConstraintCheckBox = (event) => {
+    setConstraintCheckBox({
+      ...constraintCheckBox,
+      [event.target.value]: event.target.checked,
+    });
   };
 
   //   ?? only displays the unique values for the PLC's
@@ -111,7 +143,29 @@ function AutoGen(props) {
     }, []);
   }
 
+  const REST_API_URL =
+    'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/schedule/';
+  const handleChange = (event) => {
+    if (event.target.value === 'allData') {
+      setFieldType('');
+      setCondition('');
+      setTargetField('');
+    }
+    setValue(event.target.value);
+  };
+  const REST_API_URL_CONS =
+    'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint_schedule/';
+
   //   This pulls the value from the API and creates the PLC list
+  useEffect(() => {
+    const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/schedule/`;
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((schedules) => {
+        setTrigger(schedules);
+      });
+  }, []);
+
   useEffect(() => {
     const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/plc/alluniquecarid/`;
     fetch(apiUrl)
@@ -122,6 +176,61 @@ function AutoGen(props) {
         setUniquePlcs(plcs);
       });
   }, []);
+
+  useEffect(() => {
+    const apiUrlCon = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint_schedule/`;
+    fetch(apiUrlCon)
+      .then((res) => res.json())
+      .then((cons) => {
+        setConstraintList(cons);
+      });
+  }, []);
+
+  useEffect(() => {
+    const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/data_type/`;
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((dataTypes) => {
+        let fields = new Map();
+        dataTypes.forEach((element) => {
+          fields.set(element.id, element.name);
+        });
+        setFieldTypeLookUp(fields);
+        setDataTypes(dataTypes);
+      });
+  }, []);
+  useEffect(() => {
+    const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/clause/
+    `;
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((conditions) => {
+        let fields = new Map();
+        conditions.forEach((element) => {
+          fields.set(element.id, element.name);
+        });
+        setConditionLookUp(fields);
+        setConditions(conditions);
+      });
+  }, []);
+
+  useEffect(() => {
+    const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/interval/
+    `;
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((intervals) => {
+        let fields = new Map();
+        intervals.forEach((element) => {
+          fields.set(element.id, element.name);
+        });
+        setIntervalLookUp(fields);
+        setIntervals(intervals);
+      });
+  }, []);
+
+  const classes = useStyles();
+  //const { setToken } = props;
 
   return (
     <>
@@ -238,13 +347,13 @@ function AutoGen(props) {
                   onClick={handleChangeRadioInt}
                 >
                   <FormControlLabel
-                    value='Bi-Monthly'
+                    value='2'
                     control={<Radio />}
                     label='Bi-Monthly'
                   />
 
                   <FormControlLabel
-                    value='Monthly'
+                    value='1'
                     control={<Radio />}
                     label='Monthly'
                   />
@@ -255,7 +364,7 @@ function AutoGen(props) {
 
           {/* This is the second set of remote button for select all or by constraints */}
           <Grid item>
-            <div style={{ marginLeft: '200px', marginTop: '50px' }}>
+            <div style={{ marginLeft: '50px', marginTop: '50px' }}>
               <h2>Select Contents of Report</h2>
               <FormControl component='constraint'>
                 <RadioGroup
@@ -274,25 +383,7 @@ function AutoGen(props) {
                     value='setConstraint'
                     control={<Radio />}
                     label='Set Constraint'
-                    onClick={() => {
-                      {
-                        constraint.map((d, i) => {
-                          constraint.shift(i, 1);
-                          setConstraint([...constraint]);
-                        });
-
-                        constraintList.map((c, i) => {
-                          let conListItem = {
-                            userEmail: c.userEmail,
-                            field: c.field,
-                            LTGT: c.LTGT,
-                            amount: c.amount,
-                          };
-                          constraint.push(conListItem);
-                          setConstraint([...constraint]);
-                        });
-                      }
-                    }}
+                    onClick={handleChangeConstraintList}
                   />
                 </RadioGroup>
               </FormControl>
@@ -377,33 +468,31 @@ function AutoGen(props) {
             {/* Select Field */}
 
             <Grid item>
-              <div
-                className='fields'
-                style={{ marginLeft: '50px', marginTop: '50px' }}
-              >
+              <div style={{ marginLeft: '50px', marginTop: '50px' }}>
                 <FormControl
-                  style={{ width: 150 }}
+                  style={{ width: 200 }}
                   variant='outlined'
-                  className='fields'
+                  className={classes.formControl}
                 >
                   <InputLabel id='selectFields'>Select Field</InputLabel>
                   <Select
                     labelId=''
                     id=''
-                    value={field}
-                    onChange={handleChangeFields}
+                    value={fieldType}
+                    onChange={(e) => {
+                      setFieldType(e.target.value);
+
+                      console.log(e.target.value);
+                    }}
                     label='selectFields'
                   >
-                    <MenuItem value={'Flow Rate'}>Flow Rate(L/min)</MenuItem>
-                    <MenuItem value={'Range'}>Range(mm)</MenuItem>
-                    <MenuItem value={'Temperature'}>
-                      Temperature(Deg C)
-                    </MenuItem>
-                    <MenuItem value={'Density'}>Density(kg/m^3)</MenuItem>
-                    <MenuItem value={'Net Volume'}>Net Volume(L)</MenuItem>
-                    <MenuItem value={'Pressure'}>Pressure(kPa)</MenuItem>
-                    <MenuItem value={'Outage'}>Outage(in)</MenuItem>
-                    <MenuItem value={'Gross Volume'}>Gross Volume(L)</MenuItem>
+                    {dataTypes.map((d) => {
+                      return (
+                        <MenuItem value={d.id} className='customOption'>
+                          {d.name}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </div>
@@ -419,18 +508,33 @@ function AutoGen(props) {
                 <FormControl
                   style={{ width: 150 }}
                   variant='outlined'
-                  className='LTGT'
+                  className={classes.formControl}
                 >
                   <InputLabel id='select'>Select</InputLabel>
                   <Select
                     labelId=''
                     id=''
-                    value={LTGT}
-                    onChange={handleChangeLTGT}
-                    label='LTGT'
+                    value={condition}
+                    onChange={(e) => {
+                      setCondition(e.target.value);
+                    }}
+                    label='Select'
                   >
-                    <MenuItem value={'Less Than'}>Less Than</MenuItem>
-                    <MenuItem value={'Greater Than'}>Greater Than</MenuItem>
+                    {conditions.map((c) => {
+                      return (
+                        <MenuItem
+                          value={c.id}
+                          className='customOption'
+                          onChange={(n) => {
+                            if (c.name !== '') {
+                              setLTGT(c.name);
+                            }
+                          }}
+                        >
+                          {c.name}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </div>
@@ -453,23 +557,66 @@ function AutoGen(props) {
             </Grid>
           </Grid>
         ) : null}
+
         {/* This is where the constraint Box starts. 
         First the add constraint button and then the constraint box */}
         {radioCon === 'setConstraint' ? (
           <Grid container direction='row' alignItems='flex-start'>
             <div style={{ marginLeft: '250px', marginBottom: '10px' }}>
-              {field != '' && LTGT != '' && amount != '' ? (
+              {fieldType != '' && condition != '' && amount != '' ? (
                 <button
                   className='addConstBtn'
                   type='submit'
-                  onClick={() => {
+                  onClick={(e) => {
                     let con = {
-                      selectedPLC,
-                      field,
-                      LTGT,
-                      amount,
+                      user_id: userId,
+                      data_type_id: fieldType,
+                      clause_id: condition,
+                      value: amount,
+                      LTGL: LTGT,
                     };
-                    constraint.push(con);
+                    newConstraint.push(con);
+                    setNewConstraint([...newConstraint]);
+                    {
+                      console.log(newConstraint);
+                    }
+                    //e.preventDefault();
+
+                    newConstraint.map((t, i) => {
+                      {
+                        fetch(REST_API_URL_CONS, {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+
+                          body: JSON.stringify({
+                            user_id: t.user_id,
+                            data_type_id: t.data_type_id,
+                            clause_id: t.clause_id,
+                            value: t.value,
+                          }),
+                        })
+                          .then((response) => {
+                            if (response.ok) {
+                              console.log(t.newTrigger);
+                            } else {
+                              throw new Error('Something went wrong');
+                              console.log(t.trigger);
+                            }
+                          })
+                          .then((data) => {
+                            // HANDLE RESPONSE DATA
+
+                            console.log([...constraint]);
+                          })
+                          .catch((error) => {
+                            // HANDLE ERROR
+                            console.log(error);
+                          });
+                        //
+                      }
+                    });
                     setConstraint([...constraint]);
                   }}
                 >
@@ -495,7 +642,7 @@ function AutoGen(props) {
             container
             direction='row'
             alignItems='flex-start'
-            style={{ width: '80%' }}
+            style={{ width: '90%' }}
           >
             {' '}
             <h2
@@ -513,72 +660,153 @@ function AutoGen(props) {
                 marginBottom: '5px',
               }}
             >
-              {constraint.map((r, i) => (
-                <tr className='constBox' style={{ height: '30px' }}>
-                  <span style={{ fontSize: '20px' }}>
-                    User Email: {r.userEmail} Where
-                  </span>
-                  <span>&nbsp;&nbsp;</span>
-                  <span style={{ fontSize: '20px' }}>{r.field} is</span>
-                  <span>&nbsp;&nbsp;</span>
-                  <span style={{ fontSize: '20px' }}>{r.LTGT}</span>
-                  <span>&nbsp;&nbsp;</span>
-                  <span
-                    style={{
-                      fontSize: '20px',
-                    }}
-                  >
-                    {r.amount}
-                  </span>{' '}
-                  <button
-                    className='removeBtn'
-                    onClick={(e) => {
-                      constraint.splice(i, 1);
-                      setConstraint([...constraint]);
-                    }}
-                    style={{ marginLeft: '10px' }}
-                  >
-                    Remove
-                  </button>
-                </tr>
-              ))}
+              <TableRow className='constBox' style={{ height: '30px' }}>
+                {constraint.map((r, i) => (
+                  <>
+                    {r.user_id == userId ? (
+                      <span>
+                        <Grid container direction='row' alignItems='flex-start'>
+                          <Grid item>
+                            <div
+                              style={{
+                                width: '400px',
+                                marginLeft: '5px',
+                                marginRight: '50px',
+                              }}
+                            >
+                              User ID: {r.user_id} Where{' '}
+                              {(() => {
+                                switch (r.data_type_id) {
+                                  case 1:
+                                    return 'Flow Rate(L/min)';
+                                  case 2:
+                                    return 'Range(mm)';
+                                  case 3:
+                                    return 'Temperature(Deg C)';
+                                  case 4:
+                                    return 'Density(kg/m^3';
+                                  case 5:
+                                    return 'Net Volume(L)';
+                                  case 6:
+                                    return 'Pressure(kPa)';
+                                  case 7:
+                                    return 'Outage(in)';
+                                  case 8:
+                                    return 'Gross Volume(L)';
+
+                                  default:
+                                    return 'error';
+                                }
+                              })()}{' '}
+                              is{' '}
+                              {r.clause_id == '1'
+                                ? 'Less Than'
+                                : 'Greater Than'}{' '}
+                              {r.value}
+                              {' Constraint ID: ' + r.id}
+                            </div>
+                          </Grid>
+                          <Grid item>
+                            <ButtonGroup
+                              style={{ margin: '2px' }}
+                              size='small'
+                              variant='contained'
+                            >
+                              <Button
+                                variant='outlined'
+                                startIcon={<SaveIcon />}
+                                style={{
+                                  backgroundColor: '#00c853',
+                                }}
+                                onClick={(e) => {
+                                  constraintCheckBox.push(r.id);
+
+                                  setConstraintCheckBox([
+                                    ...constraintCheckBox,
+                                  ]);
+                                }}
+                              >
+                                Add constraint
+                              </Button>
+                              <Button
+                                variant='outlined'
+                                style={{
+                                  backgroundColor: '#c62828',
+                                }}
+                                startIcon={<DeleteIcon />}
+                                onClick={(e) => {
+                                  constraintCheckBox.splice(i, 1);
+                                  setConstraintCheckBox([
+                                    ...constraintCheckBox,
+                                  ]);
+                                }}
+                              >
+                                Remove
+                              </Button>
+                            </ButtonGroup>
+                          </Grid>
+                        </Grid>
+                      </span>
+                    ) : null}
+                  </>
+                ))}
+              </TableRow>
             </div>{' '}
           </Grid>
         ) : null}
 
         {/* This is the end of the constraints box section */}
 
-        <Grid container direction='row' alignItems='flex-start'>
+        <Grid container direction='row' alignItems='left'>
           <div style={{ marginLeft: '250px' }}>
             <br />
-            {selectedPLC != undefined && selectedPLC != '' ? (
+            {selectedPLC != undefined &&
+            selectedPLC != '' &&
+            radioCon === 'selectAll' &&
+            radioInt != '' ? (
               <button
                 className='addReportBtn'
                 type='submit'
                 onClick={() => {
-                  // {radioCon === 'selectAll' ? (): null }
                   let trig = {
-                    carId: selectedPLC,
-                    interval: radioInt,
+                    // id: 4,
+                    car_id: selectedPLC,
+                    interval_id: radioInt,
+                    user_id: userId,
+                    constraint_id: '-1',
                   };
-                  trigger.push(trig);
-                  setTrigger([...trigger]);
+                  console.log(trig);
+                  newTrigger.push(trig);
+                  setNewTrigger([...newTrigger]);
                 }}
               >
                 Add Report
               </button>
-            ) : (
+            ) : null}
+
+            {selectedPLC != undefined &&
+            selectedPLC != '' &&
+            radioCon === 'setConstraint' &&
+            radioInt != '' ? (
               <button
-                disabled
                 className='addReportBtn'
-                style={{
-                  backgroundColor: ' lightgray',
-                  cursor: 'not-allowed',
+                type='submit'
+                onClick={() => {
+                  let trig = {
+                    car_id: selectedPLC,
+                    interval_id: radioInt,
+                    user_id: userId,
+                    constraint_id: constraintCheckBox[0],
+                  };
+                  newTrigger.push(trig);
+                  setNewTrigger([...newTrigger]);
+                  console.log(trig.constraint_id);
+                  console.log(checked);
                 }}
               >
                 Add Report
               </button>
-            )}
+            ) : null}
           </div>
         </Grid>
         {/* This is the start of the Reports box at the bottom */}
@@ -590,43 +818,100 @@ function AutoGen(props) {
         >
           <h2 style={{ marginLeft: '250px' }}>List of Reports</h2>
           <div className='BottomDiv'>
+            {newTrigger.map((r, i) => (
+              <>
+                {r.user_id == userId ? (
+                  <TableRow>
+                    <span>
+                      <Grid container direction='row' alignItems='flex-start'>
+                        <Grid item style={{ width: '570px' }}>
+                          <div
+                            style={{
+                              marginLeft: '5px',
+                              marginRight: '10px',
+                            }}
+                          >
+                            <span>User Id: {r.user_id} </span>
+                            <span>Car ID : {r.car_id}</span>
+
+                            {r.interval_id == '1' ? (
+                              <span> Interval : Monthly</span>
+                            ) : (
+                              <span> Interval : Bi-Monthly</span>
+                            )}
+                            {r.constraint_id != -1 ? (
+                              <span> Constraint ID: {r.constraint_id}</span>
+                            ) : null}
+                          </div>
+                        </Grid>
+                        <Grid item>
+                          <Button
+                            onClick={(e) => {
+                              trigger.splice(i, 1);
+                              setTrigger([...trigger]);
+                            }}
+                            style={{
+                              margin: '2px',
+                              backgroundColor: '#c62828',
+                            }}
+                            variant='outlined'
+                            startIcon={<DeleteIcon />}
+                          >
+                            Remove
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </span>
+                  </TableRow>
+                ) : null}
+              </>
+            ))}
             {trigger.map((r, i) => (
-              <tr className='liBottomDiv'>
-                Car ID :{' '}
-                <span
-                  style={{ color: 'rgb(73, 132, 243)', fontWeight: 'bold' }}
-                >
-                  {r.carId}
-                </span>
-                <span>&nbsp;&nbsp;</span> Interval :
-                <span
-                  style={{ color: 'rgb(73, 132, 243)', fontWeight: 'bold' }}
-                >
-                  {r.interval}
-                </span>
-                {/*
-                <span>&nbsp;&nbsp;</span> To Date :
-                <span
-                  style={{
-                    color: 'rgb(73, 132, 243)',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  {r.finishDate}
-                </span>{' '} */}
-                {/* <span>&nbsp;&nbsp;</span> <span>&nbsp;&nbsp;</span>{" "}
-                <span>&nbsp;&nbsp;</span> */}
-                <button
-                  className='removeBtn'
-                  onClick={(e) => {
-                    trigger.splice(i, 1);
-                    setTrigger([...trigger]);
-                  }}
-                  style={{ marginLeft: '10px' }}
-                >
-                  Remove
-                </button>
-              </tr>
+              <>
+                {r.user_id == userId ? (
+                  <TableRow>
+                    <span>
+                      <Grid container direction='row' alignItems='flex-start'>
+                        <Grid item style={{ width: '570px' }}>
+                          <div
+                            style={{
+                              marginLeft: '5px',
+                              marginRight: '10px',
+                            }}
+                          ></div>
+                          <span>User Id: {r.user_id} </span>
+                          <span>Car ID : {r.car_id}</span>
+
+                          {r.interval_id == '1' ? (
+                            <span> Interval : Monthly</span>
+                          ) : (
+                            <span> Interval : Bi-Monthly</span>
+                          )}
+                          {r.constraint_id !== -1 ? (
+                            <span> Constraint ID: {r.constraint_id}</span>
+                          ) : null}
+                        </Grid>
+                        <Grid item>
+                          <Button
+                            style={{
+                              backgroundColor: '#c62828',
+                              margin: '2px',
+                            }}
+                            variant='outlined'
+                            startIcon={<DeleteIcon />}
+                            onClick={(e) => {
+                              trigger.splice(i, 1);
+                              setTrigger([...trigger]);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </span>
+                  </TableRow>
+                ) : null}
+              </>
             ))}
           </div>{' '}
           <Grid container direction='row' alignItems='flex-start'>
@@ -640,21 +925,40 @@ function AutoGen(props) {
                 type='submit'
                 onClick={(e) => {
                   e.preventDefault();
-                  {
-                    trigger.map((t) => {
-                      window.open(
-                        'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=' +
-                          t.carId +
-                          '&startDate=' +
-                          t.startDate +
-                          '&finishDate=' +
-                          t.finishDate
-                      );
-                    });
-                  }
+
+                  newTrigger.map((t, i) => {
+                    {
+                      fetch(REST_API_URL, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+
+                        body: JSON.stringify({
+                          car_id: t.car_id,
+                          interval_id: t.interval_id,
+                          user_id: t.user_id,
+                          constraint_id: t.constraint_id,
+                        }),
+                      })
+                        .then((response) => {
+                          if (response.ok) {
+                            console.log(t.newTrigger);
+                          } else {
+                            throw new Error('Something went wrong');
+                            console.log(t.trigger);
+                          }
+                        })
+                        .catch((error) => {
+                          // HANDLE ERROR
+                          console.log(error);
+                        });
+                      //
+                    }
+                  });
                 }}
               >
-                Generate Report
+                Schedule Reports
               </button>
             ) : (
               <button

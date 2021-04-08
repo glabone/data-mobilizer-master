@@ -66,8 +66,6 @@ function Dashboard(props) {
     fetch(apiUrl)
       .then((res) => res.json())
       .then((plcs) => {
-        // JSON.stringify(plcs);
-        // uniquePlcs = uniqueBy(plcs, "car_id");
         setUniquePlcs(plcs);
       });
   }, []);
@@ -403,11 +401,8 @@ function Dashboard(props) {
             }}
           >
             {trigger.map((r, i) => (
-              <tr className='liBottomDiv'>
-                PLC ID :{' '}
-                <span span style={{ fontSize: '20px' }}>
-                  {r.carId}
-                </span>
+              <tr className='liBottomDiv' style={{ textAlign: 'left' }}>
+                PLC ID : <span style={{ fontSize: '20px' }}>{r.carId}</span>
                 <span>&nbsp;&nbsp;</span> From Date :
                 <span span style={{ fontSize: '20px' }}>
                   {r.startDate}
