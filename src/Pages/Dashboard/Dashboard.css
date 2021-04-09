@@ -64,15 +64,28 @@
   height: 10%;
 }
 .BottomDiv {
-  width: 80%;
+  width: 70%;
   height: 200px;
   border: solid rgb(11, 180, 95);
-  margin-left: 250px;
-
+  margin-left: 200px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   overflow: auto;
+  text-align: left;
+  padding-left: 10px;
   /* margin-right: auto; */
 }
 .GenerateBTN {
+  margin-left: 200px;
+
+  width: 200px;
+  height: 40px;
+  background-color: rgb(11, 180, 95);
+  color: #ffffff;
+  margin-top: 30px;
+  cursor: pointer;
+}
+.setBTN {
   width: 200px;
   height: 40px;
   background-color: rgb(11, 180, 95);
@@ -87,10 +100,11 @@
 }
 
 .customSelect {
-  width: 150px;
+  width: 200px;
   height: 30px;
-  /* background-color: rgb(213, 250, 203); */
+  background-color: rgb(213, 250, 203);
   cursor: pointer;
+  margin-top: 30px;
 }
 .removeBtn {
   width: 100px;
@@ -105,31 +119,28 @@
   color: rgb(35, 46, 40);
   font-weight: bold;
 }
-.sideDiv {
-  height: 100px;
-  width: 300px;
-  border: solid rgb(11, 180, 95);
-  background-color: rgb(213, 250, 203);
-
+.costraintDiv {
   margin-top: 20px;
+  border: #23cc71 solid;
+  width: 500px;
+  overflow: auto;
+  height: 200px;
 }
-.sideInput {
-  width: 70px;
-}
-.addReportBtn {
-  width: 200px;
-  height: 40px;
-  background-color: rgb(11, 180, 95);
-  color: #ffffff;
-  margin-top: 10px;
-  cursor: pointer;
+.constraintNumber {
+  margin-top: 20px;
+  margin-left: 20px;
 }
 
-.addConstBtn {
+.setBTNConst {
   width: 200px;
   height: 40px;
   background-color: rgb(11, 180, 95);
   color: #ffffff;
   margin-top: 30px;
   cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+}
+.fixDiv {
+  width: 100%;
 }

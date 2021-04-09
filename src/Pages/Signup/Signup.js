@@ -46,8 +46,8 @@ function Signup(props) {
         <div className='ModalS'>
           <h2>Sign up with your information</h2>
           <p>
-            Password must have Capital Letter, small letter, number , and a
-            symbol ie.! @ # $ %
+            Password must have Capital Letter, small letter, number , and one of
+            those characters(!@#$%^&*)
           </p>
           <br />
           <Form onSubmit={(values) => handleSubmit(values, setToken)}>
@@ -159,6 +159,21 @@ function Signup(props) {
             >
               Sign up
             </button>
+            <button
+              style={{
+                width: '150px',
+                height: '50px',
+                paddingTop: '0px',
+                marginLeft: '20px',
+              }}
+              type='submit'
+              className='buttonSaveModalS'
+              onClick={() => {
+                setToken(undefined);
+              }}
+            >
+              Go to Login
+            </button>
           </Form>
         </div>
       </div>
@@ -188,9 +203,13 @@ const SignupFormik = withFormik({
     confirmPassword: Yup.string()
       .required()
       .label('Confirm password')
-      .test('passwords-match', 'Passwords must match', function (value) {
-        return this.parent.password === value;
-      }),
+      .test(
+        'passwords-match',
+        'Passwords must match ya fool',
+        function (value) {
+          return this.parent.password === value;
+        }
+      ),
   }),
 
   handleSubmit: (values, setToken) => {

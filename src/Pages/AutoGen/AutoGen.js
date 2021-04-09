@@ -186,6 +186,15 @@ function AutoGen(props) {
       });
   }, []);
 
+  function getConstraintList() {
+    const apiUrlCon = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint_schedule/`;
+    fetch(apiUrlCon)
+      .then((res) => res.json())
+      .then((cons) => {
+        setConstraintList(cons);
+      });
+  }
+
   useEffect(() => {
     const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/data_type/`;
     fetch(apiUrl)
@@ -389,115 +398,46 @@ function AutoGen(props) {
               </FormControl>
             </div>
           </Grid>
-          <Grid item>
-            {/* <div style={{ marginLeft: '250px', marginBottom: '30px' }}>
+        </Grid>
+        <Grid container direction='row' alignItems='flex-start'>
+          {/* <div style={{ marginLeft: '250px', marginBottom: '30px' }}>
                 <h2>Select Car ID</h2>
               </div> */}
-            <div style={{ marginLeft: '250px' }}>
-              <FormControl
-                style={{ marginTop: '50px', width: '180px' }}
-                variant='outlined'
-                className='plcSelect'
+          <div style={{ marginLeft: '250px' }}>
+            <FormControl
+              style={{ marginTop: '50px', width: '180px' }}
+              variant='outlined'
+              className='plcSelect'
+            >
+              <InputLabel id='selected Car Id'>Selected Car ID</InputLabel>
+              <Select
+                labelId=''
+                id=''
+                name='plc'
+                value={selectedPLC}
+                cursor='pointer'
+                label='selected Car Id'
+                //   className='customSelect'
+                onChange={(event) => {
+                  setTheme({ main: 'rgb(181, 247, 162)' });
+                  setSelectedPLC(event.target.value);
+                }}
               >
-                <InputLabel id='selected Car Id'>Selected Car ID</InputLabel>
-                <Select
-                  labelId=''
-                  id=''
-                  name='plc'
-                  value={selectedPLC}
-                  cursor='pointer'
-                  label='selected Car Id'
-                  //   className='customSelect'
-                  onChange={(event) => {
-                    setTheme({ main: 'rgb(181, 247, 162)' });
-                    setSelectedPLC(event.target.value);
-                  }}
-                >
-                  {uniquePlcs.map((u) => {
-                    return (
-                      <MenuItem value={u} className='customOption'>
-                        {u}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </div>
-          </Grid>
+                {uniquePlcs.map((u) => {
+                  return (
+                    <MenuItem value={u} className='customOption'>
+                      {u}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </div>
         </Grid>
-        {/* {radioCon === 'selectAll' ? (
-          <Grid item>
-            
-            <div style={{ marginLeft: '250px' }}>
-              <FormControl
-                style={{ marginTop: '50px', width: '180px' }}
-                variant='outlined'
-                className='plcSelect'
-              >
-                <InputLabel id='selected Car Id'>Selected Car ID</InputLabel>
-                <Select
-                  labelId=''
-                  id=''
-                  name='plc'
-                  value={selectedPLC}
-                  cursor='pointer'
-                  label='selected Car Id'
-                  //   className='customSelect'
-                  onChange={(event) => {
-                    setTheme({ main: 'rgb(181, 247, 162)' });
-                    setSelectedPLC(event.target.value);
-                  }}
-                >
-                  {uniquePlcs.map((u) => {
-                    return (
-                      <MenuItem value={u} className='customOption'>
-                        {u}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </div>
-          </Grid>
-        ) : null} */}
+
         {/* This is a Grid with the Select car ID, Select fields, select LTGT, enter amount */}
         {radioCon === 'setConstraint' ? (
           <Grid container direction='row' alignItems='flex-start'>
-            {/* This is where the select Car ID starts */}
-
-            {/* <Grid item>
-              <div style={{ marginLeft: '250px' }}>
-                <FormControl
-                  style={{ marginTop: '50px', width: '180px' }}
-                  variant='outlined'
-                  className='plcSelect'
-                >
-                  <InputLabel id='selected Car Id'>Selected Car ID</InputLabel>
-                  <Select
-                    labelId=''
-                    id=''
-                    name='plc'
-                    value={selectedPLC}
-                    cursor='pointer'
-                    label='selected Car Id'
-                    //   className='customSelect'
-                    onChange={(event) => {
-                      setTheme({ main: 'rgb(181, 247, 162)' });
-                      setSelectedPLC(event.target.value);
-                    }}
-                  >
-                    {uniquePlcs.map((u) => {
-                      return (
-                        <MenuItem value={u} className='customOption'>
-                          {u}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </div>
-            </Grid> */}
-
             {/* Select Field */}
 
             <Grid item>
@@ -647,8 +587,15 @@ function AutoGen(props) {
                           })
                           .then((data) => {
                             // HANDLE RESPONSE DATA
+                            const apiUrlCon = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint_schedule/`;
+                            fetch(apiUrlCon)
+                              .then((res) => res.json())
+                              .then((cons) => {
+                                setConstraint(cons);
+                              });
 
                             console.log([...constraint]);
+                            console.log([...constraintList]);
                           })
                           .catch((error) => {
                             // HANDLE ERROR
@@ -657,7 +604,6 @@ function AutoGen(props) {
                         //
                       }
                     });
-                    setConstraint([...constraint]);
                   }}
                 >
                   Add New Constraint
@@ -703,17 +649,17 @@ function AutoGen(props) {
                 marginBottom: '5px',
               }}
             >
-              <TableRow className='constBox' style={{ height: '30px' }}>
-                {constraint.map((r, i) => (
-                  <>
-                    {r.user_id == userId ? (
+              {constraint.map((r, i) => (
+                <>
+                  {r.user_id == userId ? (
+                    <TableRow className='constBox' style={{ height: '30px' }}>
                       <span>
                         <Grid container direction='row' alignItems='flex-start'>
                           <Grid item>
                             <div
                               style={{
                                 width: '400px',
-                                marginLeft: '5px',
+                                marginLeft: '2px',
                                 marginRight: '50px',
                               }}
                             >
@@ -773,9 +719,11 @@ function AutoGen(props) {
                                 Add constraint
                               </Button>
                               <Button
+                                id='remove'
+                                disabled={true}
                                 variant='outlined'
                                 style={{
-                                  backgroundColor: '#f44336',
+                                  backgroundColor: 'lightgray',
                                 }}
                                 startIcon={<DeleteIcon />}
                                 onClick={(e) => {
@@ -791,10 +739,10 @@ function AutoGen(props) {
                           </Grid>
                         </Grid>
                       </span>
-                    ) : null}
-                  </>
-                ))}
-              </TableRow>
+                    </TableRow>
+                  ) : null}{' '}
+                </>
+              ))}
             </div>{' '}
           </Grid>
         ) : null}
@@ -866,7 +814,7 @@ function AutoGen(props) {
           container
           direction='row'
           alignItems='flex-start'
-          style={{ width: '80%' }}
+          style={{ width: '90%' }}
         >
           <h2 style={{ marginLeft: '250px' }}>List of Reports</h2>
           <div className='AutoBottomDiv'>
@@ -876,7 +824,7 @@ function AutoGen(props) {
                   <TableRow>
                     <span>
                       <Grid container direction='row' alignItems='flex-start'>
-                        <Grid item style={{ width: '570px' }}>
+                        <Grid item style={{ width: '570px', margin: '2px' }}>
                           <div
                             style={{
                               marginLeft: '5px',
@@ -924,7 +872,7 @@ function AutoGen(props) {
                   <TableRow>
                     <span>
                       <Grid container direction='row' alignItems='flex-start'>
-                        <Grid item style={{ width: '570px' }}>
+                        <Grid item style={{ width: '570px', margin: '2px' }}>
                           <div
                             style={{
                               marginLeft: '5px',
@@ -1022,10 +970,11 @@ function AutoGen(props) {
                 variant='outlined'
                 style={{
                   height: '50px',
-                  backgroundColor: 'gray',
+                  backgroundColor: ' lightgray',
                   cursor: 'not-allowed',
                   marginLeft: '250px',
                   marginTop: '10px',
+                  marginBottom: '10px',
                 }}
               >
                 Schedule Reports

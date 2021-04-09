@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Amiri&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Amiri&display=swap');
 @media all and (min-width: 480px) {
   .Admin {
     padding-bottom: 70px;
@@ -90,7 +90,7 @@ tr:hover {
   background-color: rgb(59, 185, 122);
 }
 
-user agent stylesheet input[type="checkbox" i] {
+user agent stylesheet input[type='checkbox' i] {
   background-color: initial;
   cursor: default;
   appearance: auto;

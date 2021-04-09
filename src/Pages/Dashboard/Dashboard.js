@@ -12,13 +12,16 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import withListLoading from '../../Components/withListLoading/withListLoading';
-import SearchBar from '../../Components/SearchBar/SearchBar';
+import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import Constraints from '../../Components/Constraints/Constraints';
-import TimeSelect from '../../Components/TimeSelect/TimeSelect';
-import ByConstraints from '../../Components/ByConstraints/ByConstraints';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 import Styled, { ThemeProvider } from 'styled-components';
-import Switch from 'react-switch';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import ArrowRightSharpIcon from '@material-ui/icons/ArrowRightSharp';
 
 const useStyles = makeStyles((theme, themeTwo, themeThree) => ({
   container: {
@@ -26,9 +29,18 @@ const useStyles = makeStyles((theme, themeTwo, themeThree) => ({
     flexWrap: 'wrap',
   },
   textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(0),
+    marginRight: theme.spacing(0),
     width: 200,
+  },
+  formControl: {
+    marginLeft: theme.spacing(0),
+    marginRight: theme.spacing(10),
+    marginTop: theme.spacing(6),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(4),
   },
 }));
 
@@ -39,46 +51,88 @@ function Dashboard(props) {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [trigger, setTrigger] = useState([]);
+  const [constraint, setConstraint] = useState([]);
+  const [tri, setTri] = useState({});
+  const [triList, setTriList] = useState([]);
   let [uniquePlcs, setUniquePlcs] = useState([]);
-  let [search, setSearch] = useState('');
-  let [index, setIndex] = useState(0);
+  let [picked, setPicked] = useState(false);
+  let [dataTypes, setDataTypes] = useState([]);
+  let [conditions, setConditions] = useState([]);
+  let [constraintId, setConstraintId] = useState([]);
+  let constr = {};
+  let [fieldTypeLookUp, setFieldTypeLookUp] = useState(new Map());
+  let [conditionLookUp, setConditionLookUp] = useState(new Map());
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') || 0);
-  const [checkedA, setCheckedA] = useState(false);
-  const [checkedB, setCheckedB] = useState(false);
-  const [checkedC, setCheckedC] = useState(false);
-
-  // const handleChange = (event) => {
-  //   setThemeTwo({ main: "rgb(181, 247, 162)" });
-  //   setState({ ...state, [event.target.name]: event.target.checked });
-  // };
-
-  function uniqueBy(arr, prop) {
-    return arr.reduce((a, d) => {
-      if (!a.includes(d[prop])) {
-        a.push(d[prop]);
-      }
-      return a;
-    }, []);
-  }
-
+  const [userEmail, setUserEmail] = useState(
+    localStorage.getItem('userEmail') || ''
+  );
+  const [value, setValue] = useState('allData');
+  const [fieldType, setFieldType] = useState('');
+  const [fieldTypeId, setFieldTypeId] = useState(0);
+  const [condition, setCondition] = useState('');
+  const [targetField, setTargetField] = useState('');
+  const [user_id, setUser_id] = useState(
+    localStorage.getItem('userLoggedIn') || ''
+  );
+  const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint/`;
+  const REST_API_URL =
+    'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint/';
+  const handleChange = (event) => {
+    if (event.target.value === 'allData') {
+      setConstraint([]);
+      setFieldType('');
+      setCondition('');
+      setTargetField('');
+    }
+    setValue(event.target.value);
+  };
   useEffect(() => {
     const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/plc/alluniquecarid/`;
     fetch(apiUrl)
       .then((res) => res.json())
       .then((plcs) => {
+        // JSON.stringify(plcs);
+        // uniquePlcs = uniqueBy(plcs, "car_id");
         setUniquePlcs(plcs);
       });
   }, []);
 
-  let [theme, setTheme] = useState({ main: ' rgba(211, 211, 211, 0.8);' });
-  let [themeTwo, setThemeTwo] = useState({
-    main: ' rgba(211, 211, 211, 0.8);',
-  });
-  let [themeThree, setThemeThree] = useState({
-    main: ' rgba(211, 211, 211, 0.8);',
-  });
-  const classes = useStyles();
+  // useEffect(() => {
+  //   fetch(apiUrl)
+  //     .then((res) => res.json())
+  //     .then((constraintId) => {
+  //       setConstraintId(constraintId);
+  //     });
+  // }, []);
 
+  useEffect(() => {
+    const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/data_type/`;
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((dataTypes) => {
+        let fields = new Map();
+        dataTypes.forEach((element) => {
+          fields.set(element.id, element.name);
+        });
+        setFieldTypeLookUp(fields);
+        setDataTypes(dataTypes);
+      });
+  }, []);
+  useEffect(() => {
+    const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/clause/
+    `;
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((conditions) => {
+        let fields = new Map();
+        conditions.forEach((element) => {
+          fields.set(element.id, element.name);
+        });
+        setConditionLookUp(fields);
+        setConditions(conditions);
+      });
+  }, []);
+  const classes = useStyles();
   const { setToken } = props;
 
   return (
@@ -179,293 +233,628 @@ function Dashboard(props) {
           </Link>
         </div>
 
-        <Grid container direction='row' alignItems='flex-start'>
-          <Grid item padding='10'>
-            <div style={{ marginLeft: '250px', marginBottom: '45px' }}>
-              <h2>Select Car ID</h2>
-            </div>
-            <div style={{ marginLeft: '250px' }}>
-              <select
-                name='plc'
-                className='customSelect'
+        <Grid container direction='row' justify='space-evenly'>
+          <div style={{ marginLeft: '40px' }}>
+            <h2>Select Car ID</h2>
+            <FormControl
+              className={classes.formControl}
+              style={{ marginLeft: '50px', marginTop: '20px' }}
+            >
+              <InputLabel htmlFor='age-native-simple'>Select Car ID</InputLabel>
+              <Select
+                style={{ width: '170px' }}
+                native
+                // value={state.age}
                 onChange={(event) => {
-                  setTheme({ main: 'rgb(181, 247, 162)' });
                   setSelectedPLC(event.target.value);
                 }}
               >
                 <optgroup label='Select PLC'>
-                  <option></option>
+                  <option aria-label='None' value='' />
                   {uniquePlcs.map((u) => {
+                    if (u !== ' ' && u !== null && u !== '') {
+                      return (
+                        <option value={u} className='customOption'>
+                          {u}
+                        </option>
+                      );
+                    }
+                  })}
+                </optgroup>
+              </Select>
+            </FormControl>
+            {/* <select
+              name="plc"
+              className="customSelect"
+              onChange={(event) => {
+                setSelectedPLC(event.target.value);
+              }}
+            >
+              <optgroup label="Select PLC">
+                <option></option>
+                {uniquePlcs.map((u) => {
+                  if (u !== " " && u !== null && u !== "") {
                     return (
-                      <option value={u} className='customOption'>
+                      <option value={u} className="customOption">
                         {u}
                       </option>
                     );
-                  })}
-                </optgroup>
-              </select>
-            </div>
-          </Grid>
-          <Grid item padding='10'>
-            <div style={{ marginLeft: '50px' }}>
-              <h2>Start Date</h2>
-              <TextField
-                style={{ marginTop: '5px' }}
-                id='date'
-                label='From'
-                type='date'
-                defaultValue='today'
-                onChange={(event) => {
-                  setThemeThree({ main: 'rgb(181, 247, 162)' });
-                  setFromDate(event.target.value);
-                  //console.log(fromDate);
-                }}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </div>
-          </Grid>
-          <Grid item padding='10'>
-            <div style={{ marginLeft: '50px' }}>
-              <h2>End Date </h2>
-              <TextField
-                style={{ marginTop: '5px' }}
-                id='date'
-                label='To'
-                type='date'
-                defaultValue='today'
-                onChange={(event) => {
-                  setThemeThree({ main: 'rgb(181, 247, 162)' });
-                  setToDate(event.target.value);
-                }}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </div>
-          </Grid>
-        </Grid>
-        <Grid container direction='row' alignItems='flex-start'>
-          <div
-            style={{
-              marginLeft: '250px',
-              marginTop: '20px',
-              marginBottom: '20px',
-            }}
-          >
-            <Constraints />
-          </div>
-        </Grid>
-        <Grid container direction='row' alignItems='flex-start'>
-          <div
-            style={{
-              marginLeft: '250px',
-              marginBottom: '50px',
-            }}
-          >
-            <Grid container direction='row' alignItems='flex-start'>
-              <div>
-                <ByConstraints />
-              </div>
-            </Grid>
-            <Grid container direction='row' alignItems='flex-start'>
-              <div style={{ marginLeft: '0px' }}>
-                <br />
-                {selectedPLC != undefined &&
-                selectedPLC != '' &&
-                fromDate != undefined &&
-                toDate != undefined ? (
-                  <button
-                    className='addReportBtn'
-                    type='submit'
-                    onClick={() => {
-                      let trig = {
-                        carId: selectedPLC,
-                        startDate: fromDate,
-                        finishDate: toDate,
-                      };
-                      trigger.push(trig);
-                      setTrigger([...trigger]);
-                    }}
-                  >
-                    Add Report
-                  </button>
-                ) : (
-                  <button
-                    disabled
-                    className='addReportBtn'
-                    style={{
-                      backgroundColor: ' lightgray',
-                      cursor: 'not-allowed',
-                    }}
-                  >
-                    Add Report
-                  </button>
-                )}
-              </div>
-            </Grid>
-          </div>
-        </Grid>
-
-        {/* <FormGroup column>
-              <h2>Select Type</h2>
-
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedA}
-                    onChange={(event) => {
-                      setCheckedA(event.target.checked);
-                      setThemeTwo({ main: "rgb(181, 247, 162)" });
-                    }}
-                    name="checkedA"
-                    color="primary"
-                  />
-                }
-                label="Volume"
-              />
-
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedB}
-                    onChange={(event) => {
-                      setCheckedB(event.target.checked);
-                      setThemeTwo({ main: "rgb(181, 247, 162)" });
-                    }}
-                    name="checkedB"
-                    color="primary"
-                  />
-                }
-                label="Pressure"
-              />
-
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedC}
-                    onChange={(event) => {
-                      setCheckedC(event.target.checked);
-                      setThemeTwo({ main: "rgb(181, 247, 162)" });
-                    }}
-                    name="checkedC"
-                    color="primary"
-                  />
-                }
-                label="Temprature"
-              />
-            </FormGroup> */}
-
-        {/* <div>
-            <h2>Select Type By Range</h2>
-            <div className='sideDiv'>
-              <label> Volume</label>
-              <br /> <label>Min</label>{' '}
-              <input type='number' className='sideInput' />
-              <span>&nbsp;&nbsp;</span> <span>&nbsp;&nbsp;</span>{' '}
-              <span>&nbsp;&nbsp;</span>
-              <label>Max</label> <input type='number' className='sideInput' />
-            </div>
-            <div className='sideDiv'>
-              <label>Pressure</label>
-              <br />
-              <label>Min</label> <input type='number' className='sideInput' />
-              <span>&nbsp;&nbsp;</span> <span>&nbsp;&nbsp;</span>{' '}
-              <span>&nbsp;&nbsp;</span> <label>Max</label>{' '}
-              <input type='number' className='sideInput' />
-            </div>
-            <div className='sideDiv'>
-              <label>Temprature</label>
-              <br />
-              <label>Min</label> <input type='number' className='sideInput' />
-              <span>&nbsp;&nbsp;</span> <span>&nbsp;&nbsp;</span>{' '}
-              <span>&nbsp;&nbsp;</span> <label>Max</label>{' '}
-              <input type='number' className='sideInput' />
-            </div>
-          </div> */}
-
-        <Grid
-          container
-          direction='row'
-          alignItems='flex-start'
-          style={{ width: 1000 }}
-        >
-          <div
-            className='BottomDiv'
-            style={{
-              marginLeft: '250px',
-              marginBottom: '10px',
-            }}
-          >
-            {trigger.map((r, i) => (
-              <tr className='liBottomDiv' style={{ textAlign: 'left' }}>
-                PLC ID : <span style={{ fontSize: '20px' }}>{r.carId}</span>
-                <span>&nbsp;&nbsp;</span> From Date :
-                <span span style={{ fontSize: '20px' }}>
-                  {r.startDate}
-                </span>
-                <span>&nbsp;&nbsp;</span> To Date :
-                <span style={{ fontSize: '20px' }}>{r.finishDate}</span>{' '}
-                {/* <span>&nbsp;&nbsp;</span> <span>&nbsp;&nbsp;</span>{" "}
-                <span>&nbsp;&nbsp;</span> */}
-                <button
-                  className='removeBtn'
-                  onClick={(e) => {
-                    trigger.splice(i, 1);
-                    setTrigger([...trigger]);
-                  }}
-                  style={{ marginLeft: '10px' }}
-                >
-                  Remove
-                </button>
-              </tr>
-            ))}
-          </div>{' '}
-          <Grid container direction='row' alignItems='flex-start'>
-            {selectedPLC != undefined && selectedPLC != '' ? (
-              <button
-                className='GenerateBTN'
-                style={{
-                  marginLeft: '250px',
-                  marginBottom: '10px',
-                }}
-                type='submit'
-                onClick={(e) => {
-                  e.preventDefault();
-                  {
-                    trigger.map((t) => {
-                      window.open(
-                        'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=' +
-                          t.carId +
-                          '&startDate=' +
-                          t.startDate +
-                          '&finishDate=' +
-                          t.finishDate
-                      );
-                    });
                   }
+                })}
+              </optgroup>
+            </select> */}
+          </div>{' '}
+          <div style={{ width: '300px' }}>
+            <h2>Select Start Date</h2>
+            <TextField
+              style={{ marginTop: '20px' }}
+              id='date'
+              label='From'
+              type='date'
+              defaultValue='today'
+              onChange={(event) => {
+                setFromDate(event.target.value);
+                //console.log(fromDate);
+              }}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </div>
+          <div>
+            <h2>Select End Date</h2>{' '}
+            <TextField
+              style={{ marginTop: '20px' }}
+              id='date'
+              label='To'
+              type='date'
+              defaultValue='today'
+              onChange={(event) => {
+                setToDate(event.target.value);
+              }}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </div>
+        </Grid>
+
+        <div style={{ flexGrow: '1' }}></div>
+
+        {/* <Grid container direction="row" justify="space-evenly"> */}
+
+        <div
+          className='bollet'
+          style={{
+            marginLeft: '220px',
+            marginRight: '70px',
+          }}
+        >
+          <h2>Select Type</h2>
+
+          <FormControl component='fieldset'>
+            <FormLabel component='legend'></FormLabel>
+            <RadioGroup
+              aria-label='gender'
+              name='gender1'
+              value={value}
+              onChange={handleChange}
+            >
+              <FormControlLabel
+                value='allData'
+                control={<Radio />}
+                label='select All Data'
+              />
+              <FormControlLabel
+                value='constraint'
+                control={<Radio />}
+                label='Select By Constraint.'
+              />
+            </RadioGroup>
+          </FormControl>
+        </div>
+
+        {value !== 'allData' ? (
+          <div
+            style={{
+              backgroundColor: '#f0f8ff',
+              marginTop: '20px',
+              paddingLeft: '20px',
+              boxShadow: '5px 2px 5px #DCDCDC',
+            }}
+          >
+            <div>
+              {' '}
+              <FormControl
+                className={classes.formControl}
+                style={{ marginLeft: '0px' }}
+              >
+                <InputLabel htmlFor='age-native-simple'>
+                  Select Field
+                </InputLabel>
+                <Select
+                  style={{ width: '170px', marginTop: '20px' }}
+                  native
+                  //  value={fieldTypeId}
+                  onChange={(e) => {
+                    setFieldType(e.target.value);
+                    //  setFieldTypeId(e.target.id);
+                    console.log(e.target.value);
+                  }}
+                  // inputProps={{
+                  //   name: "age",
+                  //   id: ,
+                  //}}
+                >
+                  <optgroup label='Select PLC'>
+                    <option aria-label='None' value='' />
+                    {dataTypes.map((d) => {
+                      return (
+                        <option value={d.id} className='customOption'>
+                          {d.name}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor='age-native-simple'>
+                  Select Condition
+                </InputLabel>
+                <Select
+                  style={{
+                    width: '170px',
+                    marginTop: '20px',
+                    marginLeft: '20px',
+                  }}
+                  native
+                  // value={state.age}
+                  onChange={(e) => {
+                    setCondition(e.target.value);
+                  }}
+                >
+                  <optgroup label='Select PLC'>
+                    <option aria-label='None' value='' />
+                    {conditions.map((c) => {
+                      return (
+                        <option value={c.id} className='customOption'>
+                          {c.name}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                </Select>
+              </FormControl>
+              <TextField
+                style={{ marginTop: '50px', marginRight: '50px' }}
+                type='number'
+                id='amount'
+                label='Enter Target Constraint'
+                variant='outlined'
+                onChange={(e) => {
+                  setTargetField(e.target.value);
+                }}
+              />
+            </div>{' '}
+          </div>
+        ) : null}
+        {/* </Grid> */}
+
+        <Grid container direction='row' justify='space-evenly'>
+          <div>
+            {value !== 'allData' &&
+            fieldType !== '' &&
+            condition !== '' &&
+            targetField !== '' ? (
+              <button
+                className='setBTNConst'
+                type='submit'
+                onClick={() => {
+                  constr = {
+                    fieldType: fieldTypeLookUp.get(parseInt(fieldType)),
+                    condition: conditionLookUp.get(parseInt(condition)),
+                    targetField: targetField,
+                  };
+                  //  console.log(fieldTypeLookUp);
+                  let tri = {
+                    data_type_id: fieldType,
+                    clause_id: condition,
+                    value: targetField,
+                    user_id: user_id,
+                    car_id: selectedPLC,
+                  };
+
+                  console.log(tri);
+                  // setTriList([...triList]);
+                  triList.push(tri);
+                  console.log(triList);
+
+                  // fetch(REST_API_URL, {
+                  //   method: "POST",
+                  //   headers: {
+                  //     "Content-Type": "application/json",
+                  //   },
+
+                  //   body: JSON.stringify(tri),
+                  // })
+                  //   .then((response) => {
+                  //     if (response.ok) {
+                  //     } else {
+                  //       throw new Error("Something went wrong");
+                  //     }
+                  //   })
+                  //   .catch((error) => {
+                  //     // HANDLE ERROR
+                  //     console.log(error);
+                  //   });
+                  constraint.push(constr);
+                  setConstraint([...constraint]);
                 }}
               >
-                Generate Report
+                Set Constraint
+              </button>
+            ) : (
+              <div></div>
+            )}
+            {value !== 'allData' ? <h2>selected Constraints</h2> : null}
+            {value !== 'allData' ? (
+              <div className='costraintDiv'>
+                {constraint.map((r, i) => (
+                  <tr className='liBottomDiv'>
+                    <td>
+                      <ArrowRightSharpIcon />{' '}
+                      <span
+                        style={{
+                          color: 'rgb(73, 132, 243)',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {r.fieldType}
+                      </span>
+                      <span>&nbsp;&nbsp;</span>
+                      <span
+                        style={{
+                          color: 'rgb(73, 132, 243)',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {r.condition}
+                      </span>
+                      <span>&nbsp;&nbsp;</span>
+                      <span
+                        style={{
+                          color: 'rgb(73, 132, 243)',
+                          fontWeight: 'bold',
+                          marginRight: '40px',
+                        }}
+                      >
+                        {r.targetField}
+                      </span>{' '}
+                    </td>
+                    <td>
+                      <button
+                        className='removeBtn'
+                        onClick={(e) => {
+                          constraint.splice(i, 1);
+                          setConstraint([...constraint]);
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </div>
+            ) : null}
+
+            {selectedPLC != undefined &&
+            selectedPLC != '' &&
+            fromDate != undefined &&
+            toDate != undefined ? (
+              <button
+                className='setBTN'
+                type='submit'
+                onClick={() => {
+                  let trig = {
+                    carId: selectedPLC,
+                    startDate: fromDate,
+                    finishDate: toDate,
+                    constraintArray: [...constraint],
+                  };
+                  console.log(trig.constraintArray);
+                  trigger.push(trig);
+
+                  setTrigger([...trigger]);
+                }}
+              >
+                Set Trigger
               </button>
             ) : (
               <button
                 disabled
-                className='GenerateBTN'
+                className='setBTN'
                 style={{
-                  height: '50px',
                   backgroundColor: ' lightgray',
                   cursor: 'not-allowed',
                 }}
               >
-                Generate Report
+                Set Trigger
               </button>
             )}
-          </Grid>
+          </div>
         </Grid>
+      </Grid>
+      <Grid container direction='row' justify='space-evenly'>
+        <h2>Selected Triggers</h2>
+        <div className='BottomDiv'>
+          {trigger.map((r, i) => (
+            <table>
+              <tr className='liBottomDiv'>
+                <td style={{ borderColor: 'white' }}>
+                  PLC ID :{' '}
+                  <span
+                    style={{ color: 'rgb(73, 132, 243)', fontWeight: 'bold' }}
+                  >
+                    {r.carId}
+                  </span>
+                  <span>&nbsp;&nbsp;</span> From Date :
+                  <span
+                    style={{ color: 'rgb(73, 132, 243)', fontWeight: 'bold' }}
+                  >
+                    {r.startDate}
+                  </span>
+                  <span>&nbsp;&nbsp;</span> To Date :
+                  <span
+                    style={{
+                      color: 'rgb(73, 132, 243)',
+                      fontWeight: 'bold',
+                      marginRight: '40px',
+                    }}
+                  >
+                    {r.finishDate}
+                  </span>{' '}
+                </td>
+
+                <td>
+                  <button
+                    className='removeBtn'
+                    onClick={(e) => {
+                      trigger.splice(i, 1);
+                      setTrigger([...trigger]);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </td>
+                <td>
+                  {' '}
+                  <button
+                    className='removeBtn'
+                    type='submit'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      console.log(triList.length);
+                      {
+                        triList.map((a) => {
+                          fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+
+                            body: JSON.stringify(a),
+                          })
+                            .then((response) => {
+                              if (response.ok) {
+                              } else {
+                                throw new Error('Something went wrong');
+                              }
+                            })
+                            .catch((error) => {
+                              // HANDLE ERROR
+                              console.log(error);
+                            });
+                        });
+                      }
+
+                      {
+                        if (r.constraintArray.length > 0) {
+                          window.open(
+                            'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=' +
+                              r.carId +
+                              '&startDate=' +
+                              r.startDate +
+                              '&finishDate=' +
+                              r.finishDate +
+                              '&userEmail=' +
+                              userEmail
+                          );
+                        } else {
+                          window.open(
+                            'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=' +
+                              r.carId +
+                              '&startDate=' +
+                              r.startDate +
+                              '&finishDate=' +
+                              r.finishDate
+                          );
+                        }
+                      }
+                    }}
+                    // constraintId.map((cId) => {
+                    //   fetch(apiUrl+"email=" + cId.id, { method: "Delete" });
+                    // });
+                  >
+                    Get PDF
+                  </button>
+                </td>
+                <td>
+                  {' '}
+                  <button
+                    className='removeBtn'
+                    type='submit'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      {
+                        triList.map((a) => {
+                          fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+
+                            body: JSON.stringify(a),
+                          })
+                            .then((response) => {
+                              if (response.ok) {
+                              } else {
+                                throw new Error('Something went wrong');
+                              }
+                            })
+                            .catch((error) => {
+                              // HANDLE ERROR
+                              console.log(error);
+                            });
+                        });
+                      }
+
+                      {
+                        if (r.constraintArray.length > 0) {
+                          window.open(
+                            'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=' +
+                              r.carId +
+                              '&startDate=' +
+                              r.startDate +
+                              '&finishDate=' +
+                              r.finishDate +
+                              '&userEmail=' +
+                              userEmail
+                          );
+                        } else {
+                          window.open(
+                            'http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=' +
+                              r.carId +
+                              '&startDate=' +
+                              r.startDate +
+                              '&finishDate=' +
+                              r.finishDate
+                          );
+                        }
+                      }
+                    }}
+                  >
+                    Get Excel
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={4} style={{ borderColor: 'blueviolet' }}>
+                  {' '}
+                  {r.constraintArray.map((h) => (
+                    <li>
+                      {' '}
+                      {h.fieldType} {h.condition} {h.targetField}
+                    </li>
+                  ))}{' '}
+                </td>
+              </tr>
+              {/* <tr>
+                <td colSpan={4}>
+                  {" "}
+                  <hr style={{ borderColor: "darkgray" }} />
+                </td>
+              </tr> */}
+            </table>
+          ))}
+        </div>{' '}
+        {/* <div>
+          {selectedPLC != undefined &&
+          selectedPLC != "" &&
+          fromDate != undefined &&
+          toDate != undefined ? (
+            <button
+              className="GenerateBTN"
+              style={{ height: "50px" }}
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                {
+                  console.log(constraintId);
+                  trigger.map((t) => {
+                    window.open(
+                      "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/filter?carId=" +
+                        t.carId +
+                        "&startDate=" +
+                        t.startDate +
+                        "&finishDate=" +
+                        t.finishDate +
+                        "&userEmail=" +
+                        userEmail
+                    );
+                  });
+                }
+              }}
+            >
+              Generate PDF Reports
+            </button>
+          ) : (
+            <button
+              disabled
+              className="GenerateBTN"
+              style={{
+                height: "50px",
+                backgroundColor: " lightgray",
+                cursor: "not-allowed",
+              }}
+            >
+              Generate PDF Reports
+            </button>
+          )}{" "}
+          <span>&nbsp;&nbsp;</span>
+          {selectedPLC != undefined &&
+          selectedPLC != "" &&
+          fromDate != undefined &&
+          toDate != undefined ? (
+            <button
+              className="GenerateBTN"
+              style={{ height: "50px" }}
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                {
+                  trigger.map((t) => {
+                    window.open(
+                      "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/report/export?carId=" +
+                        t.carId +
+                        "&startDate=" +
+                        t.startDate +
+                        "&finishDate=" +
+                        t.finishDate
+                    );
+                  });
+                }
+              }}
+            >
+              Export Excel Files
+            </button>
+          ) : (
+            <button
+              disabled
+              className="GenerateBTN"
+              style={{
+                height: "50px",
+                backgroundColor: " lightgray",
+                cursor: "not-allowed",
+              }}
+            >
+              Export Excel File
+            </button>
+          )}
+        </div> */}
+        <div style={{ marginBottom: '100px' }}></div>
       </Grid>
     </>
   );
