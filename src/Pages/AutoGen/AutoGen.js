@@ -796,11 +796,12 @@ function AutoGen(props) {
                     car_id: selectedPLC,
                     interval_id: radioInt,
                     user_id: userId,
-                    constraint_id: constraintCheckBox[0],
+                    constraint_id: constraintCheckBox.toString(),
                   };
                   newTrigger.push(trig);
                   setNewTrigger([...newTrigger]);
                   console.log(trig.constraint_id);
+                  console.log(constraintCheckBox.toString());
                   console.log(checked);
                 }}
               >
