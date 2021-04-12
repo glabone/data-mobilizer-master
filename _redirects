@@ -1,1 +1,1 @@
-/test https://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/users/email=test@test.com
+/test http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/users/email=test@test.com:splat 200!
