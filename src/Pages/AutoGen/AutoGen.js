@@ -792,6 +792,7 @@ function AutoGen(props) {
                       <div
                         style={{
                           marginLeft: '2px',
+                          marginRight: '100px',
                         }}
                       >
                         User ID: {r.user_id} Where{' '}
