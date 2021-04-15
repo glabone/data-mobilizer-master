@@ -234,7 +234,7 @@ function Dashboard(props) {
         </div>
 
         <Grid container direction='row' justify='space-evenly'>
-          <div style={{ marginLeft: '40px' }}>
+          <div style={{ marginLeft: '250px' }}>
             <h2>Select Car ID</h2>
             <FormControl
               className={classes.formControl}
@@ -328,8 +328,8 @@ function Dashboard(props) {
         <div
           className='bollet'
           style={{
-            marginLeft: '220px',
-            marginRight: '70px',
+            marginLeft: '20%',
+            marginRight: '25px',
           }}
         >
           <h2>Select Type</h2>
@@ -499,7 +499,7 @@ function Dashboard(props) {
             ) : (
               <div></div>
             )}
-            {value !== 'allData' ? <h2>selected Constraints</h2> : null}
+            {value !== 'allData' ? <h2>Selected Constraints</h2> : null}
             {value !== 'allData' ? (
               <div className='costraintDiv'>
                 {constraint.map((r, i) => (
@@ -570,7 +570,7 @@ function Dashboard(props) {
                   setTrigger([...trigger]);
                 }}
               >
-                Set Trigger
+                Set Constraints for Report
               </button>
             ) : (
               <button
@@ -581,14 +581,16 @@ function Dashboard(props) {
                   cursor: 'not-allowed',
                 }}
               >
-                Set Trigger
+                Set Constraints for Report
               </button>
             )}
           </div>
         </Grid>
       </Grid>
       <Grid container direction='row' justify='space-evenly'>
-        <h2>Selected Triggers</h2>
+        <Grid container direction='row' justify='space-evenly'>
+          <h2>Selected Reports</h2>
+        </Grid>
         <div className='BottomDiv'>
           {trigger.map((r, i) => (
             <table>

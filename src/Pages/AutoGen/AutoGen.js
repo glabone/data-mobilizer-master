@@ -30,6 +30,7 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { blue } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme, themeTwo, themeThree) => ({
   // container: {
@@ -94,7 +95,7 @@ function AutoGen(props) {
   const [autoGen, setAutoGen] = useState([]);
   const [constraintCheckBox, setConstraintCheckBox] = useState([]);
   const [scheduleList, setScheduleList] = useState([]);
-  const [checked, setChecked] = useState('');
+  const [checked, setChecked] = useState([]);
   const [constraintList, setConstraintList] = useState([]);
 
   //   Handle the fields in the drop down list
@@ -596,6 +597,10 @@ function AutoGen(props) {
 
                             console.log([...constraint]);
                             console.log([...constraintList]);
+                            setNewConstraint([]);
+                            setFieldType('');
+                            setCondition('');
+                            setAmount('');
                           })
                           .catch((error) => {
                             // HANDLE ERROR
@@ -627,12 +632,7 @@ function AutoGen(props) {
           </Grid>
         ) : null}
         {radioCon === 'setConstraint' ? (
-          <Grid
-            container
-            direction='row'
-            alignItems='flex-start'
-            style={{ width: '90%' }}
-          >
+          <Grid container direction='row' alignItems='flex-start'>
             {' '}
             <h2
               style={{
@@ -651,16 +651,21 @@ function AutoGen(props) {
             >
               {constraint.map((r, i) => (
                 <>
-                  {r.user_id == userId ? (
+                  {r.user_id == userId && r.status == 1 ? (
                     <TableRow className='constBox' style={{ height: '30px' }}>
                       <span>
-                        <Grid container direction='row' alignItems='flex-start'>
-                          <Grid item>
+                        <Grid
+                          container
+                          direction='row'
+                          alignItems='flex-start'
+                          justify='space-between'
+                        >
+                          <Grid item justify='flex-start'>
                             <div
                               style={{
-                                width: '400px',
+                                width: '80%',
                                 marginLeft: '2px',
-                                marginRight: '50px',
+                                marginRight: '10px',
                               }}
                             >
                               User ID: {r.user_id} Where{' '}
@@ -696,46 +701,60 @@ function AutoGen(props) {
                             </div>
                           </Grid>
                           <Grid item justify='flex-end'>
-                            <ButtonGroup
-                              style={{ margin: '2px' }}
-                              size='small'
-                              variant='contained'
+                            <Button
+                              variant='outlined'
+                              id='add'
+                              startIcon={<SaveIcon />}
+                              disabled={false}
+                              style={{
+                                backgroundColor: '#00c853',
+                                margin: 5,
+                              }}
+                              onClick={(e) => {
+                                constraintCheckBox.push(r.id);
+                                let tempCon = {
+                                  user_id: r.user_id,
+                                  data_type_id: r.data_type_id,
+                                  clause_id: r.clause_id,
+                                  value: r.value,
+                                  id: r.id,
+                                };
+                                checked.push(tempCon);
+                                setChecked([...checked]);
+                                setConstraintCheckBox([...constraintCheckBox]);
+                                r.disabled = true;
+                                r.backgroundColor = 'blue';
+                              }}
                             >
-                              <Button
-                                variant='outlined'
-                                startIcon={<SaveIcon />}
-                                disabled={false}
-                                style={{
-                                  backgroundColor: '#00c853',
-                                }}
-                                onClick={(e) => {
-                                  constraintCheckBox.push(r.id);
+                              Use constraint
+                            </Button>
+                            <Button
+                              id='delete'
+                              startIcon={<DeleteIcon />}
+                              variant='outlined'
+                              style={{
+                                backgroundColor: '#f44336',
+                              }}
+                              onClick={(e) => {
+                                let delCon = e.id;
+                                console.log(e.id);
+                                fetch(REST_API_URL_CONS + r.id, {
+                                  method: 'Delete',
+                                }).then((result) => {
+                                  const apiUrlCon = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/constraint_schedule/`;
+                                  fetch(apiUrlCon)
+                                    .then((res) => res.json())
+                                    .then((cons) => {
+                                      setConstraint(cons);
+                                    });
 
-                                  setConstraintCheckBox([
-                                    ...constraintCheckBox,
-                                  ]);
-                                }}
-                              >
-                                Add constraint
-                              </Button>
-                              <Button
-                                id='remove'
-                                disabled={true}
-                                variant='outlined'
-                                style={{
-                                  backgroundColor: 'lightgray',
-                                }}
-                                startIcon={<DeleteIcon />}
-                                onClick={(e) => {
-                                  constraintCheckBox.splice(i, 1);
-                                  setConstraintCheckBox([
-                                    ...constraintCheckBox,
-                                  ]);
-                                }}
-                              >
-                                Remove
-                              </Button>
-                            </ButtonGroup>
+                                  console.log([...constraint]);
+                                  console.log([...constraintList]);
+                                });
+                              }}
+                            >
+                              Delete
+                            </Button>
                           </Grid>
                         </Grid>
                       </span>
@@ -746,10 +765,96 @@ function AutoGen(props) {
             </div>{' '}
           </Grid>
         ) : null}
+        {checked.length > 0 ? (
+          <Grid
+            container
+            direction='row'
+            alignContent='flex-start'
+            justify='flex-start'
+            style={{ width: '100%', height: '100px' }}
+          >
+            <div
+              className='AutotempconstBox'
+              style={{
+                marginLeft: '250px',
+                marginBottom: '5px',
+              }}
+            >
+              {checked.map((r, i) => (
+                <TableRow className='constBox' style={{ height: '30px' }}>
+                  <Grid
+                    container
+                    direction='row'
+                    alignItems='flex-start'
+                    justify='space-between'
+                  >
+                    <Grid item>
+                      <div
+                        style={{
+                          marginLeft: '2px',
+                        }}
+                      >
+                        User ID: {r.user_id} Where{' '}
+                        {(() => {
+                          switch (r.data_type_id) {
+                            case 1:
+                              return 'Flow Rate(L/min)';
+                            case 2:
+                              return 'Range(mm)';
+                            case 3:
+                              return 'Temperature(Deg C)';
+                            case 4:
+                              return 'Density(kg/m^3';
+                            case 5:
+                              return 'Net Volume(L)';
+                            case 6:
+                              return 'Pressure(kPa)';
+                            case 7:
+                              return 'Outage(in)';
+                            case 8:
+                              return 'Gross Volume(L)';
+
+                            default:
+                              return 'error';
+                          }
+                        })()}{' '}
+                        is {r.clause_id == '1' ? 'Less Than' : 'Greater Than'}{' '}
+                        {r.value}
+                        {' Constraint ID: ' + r.id}
+                      </div>
+                    </Grid>
+                    <Grid item>
+                      <Button
+                        id='remove'
+                        variant='outlined'
+                        style={{
+                          backgroundColor: '#f44336',
+                        }}
+                        onClick={(e) => {
+                          checked.splice(i, 1);
+                          constraintCheckBox.splice(i, 1);
+                          setChecked([...checked]);
+                          setConstraintCheckBox([...constraintCheckBox]);
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </TableRow>
+              ))}
+            </div>
+          </Grid>
+        ) : null}
 
         {/* This is the end of the constraints box section */}
 
-        <Grid container direction='row' alignItems='left'>
+        <Grid
+          container
+          direction='row'
+          alignItems='flex-start'
+          justify='flex-start'
+        >
           <div style={{ marginLeft: '250px' }}>
             <br />
             {selectedPLC != undefined &&
@@ -800,9 +905,9 @@ function AutoGen(props) {
                   };
                   newTrigger.push(trig);
                   setNewTrigger([...newTrigger]);
-                  console.log(trig.constraint_id);
+                  setConstraintCheckBox([]);
+                  setChecked([]);
                   console.log(constraintCheckBox.toString());
-                  console.log(checked);
                 }}
               >
                 Add Report
@@ -824,8 +929,13 @@ function AutoGen(props) {
                 {r.user_id == userId ? (
                   <TableRow>
                     <span>
-                      <Grid container direction='row' alignItems='flex-start'>
-                        <Grid item style={{ width: '570px', margin: '2px' }}>
+                      <Grid
+                        container
+                        direction='row'
+                        alignItems='flex-start'
+                        justify='space-between'
+                      >
+                        <Grid item style={{ margin: '2px' }}>
                           <div
                             style={{
                               marginLeft: '5px',
@@ -848,8 +958,8 @@ function AutoGen(props) {
                         <Grid item>
                           <Button
                             onClick={(e) => {
-                              trigger.splice(i, 1);
-                              setTrigger([...trigger]);
+                              newTrigger.splice(i, 1);
+                              setNewTrigger([...newTrigger]);
                             }}
                             style={{
                               margin: '2px',
@@ -858,7 +968,7 @@ function AutoGen(props) {
                             variant='outlined'
                             startIcon={<DeleteIcon />}
                           >
-                            Remove
+                            Delete
                           </Button>
                         </Grid>
                       </Grid>
@@ -879,10 +989,9 @@ function AutoGen(props) {
                               marginLeft: '5px',
                               marginRight: '10px',
                             }}
-                          ></div>
+                          ></div>{' '}
                           <span>User Id: {r.user_id} </span>
                           <span>Car ID : {r.car_id}</span>
-
                           {r.interval_id == '1' ? (
                             <span> Interval : Monthly</span>
                           ) : (
@@ -901,11 +1010,25 @@ function AutoGen(props) {
                             variant='outlined'
                             startIcon={<DeleteIcon />}
                             onClick={(e) => {
-                              trigger.splice(i, 1);
-                              setTrigger([...trigger]);
+                              let delId = e.id;
+                              console.log(r.trigger);
+                              console.log(delId);
+                              fetch(REST_API_URL + r.id, {
+                                method: 'Delete',
+                              }).then((result) => {
+                                const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/schedule/`;
+                                fetch(apiUrl)
+                                  .then((res) => res.json())
+                                  .then((schedules) => {
+                                    setTrigger(schedules);
+                                  });
+
+                                console.log([...trigger]);
+                                console.log([...constraintList]);
+                              });
                             }}
                           >
-                            Remove
+                            Delete
                           </Button>
                         </Grid>
                       </Grid>
@@ -947,11 +1070,20 @@ function AutoGen(props) {
                       })
                         .then((response) => {
                           if (response.ok) {
-                            console.log(t.newTrigger);
+                            const apiUrl = `http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/schedule/`;
+                            fetch(apiUrl)
+                              .then((res) => res.json())
+                              .then((schedules) => {
+                                setTrigger(schedules);
+                              });
                           } else {
                             throw new Error('Something went wrong');
                             console.log(t.trigger);
                           }
+                          setNewTrigger([]);
+                          setRadioInt('');
+                          setRadioCon('');
+                          setSelectedPLC('');
                         })
                         .catch((error) => {
                           // HANDLE ERROR

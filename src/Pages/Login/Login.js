@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import { withFormik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
+import { Grid } from '@material-ui/core';
 const Login = (props) => {
   const [open, setOpen] = useState(false);
 
@@ -57,7 +58,9 @@ const Login = (props) => {
             )}
           </FormGroup>
           <Wrapper>
-            <Button type='submit'>Login</Button>
+            <Grid container direction='row' justify='center'>
+              <Button type='submit'>Login</Button>
+            </Grid>
           </Wrapper>
         </Form>
       </Formbody>

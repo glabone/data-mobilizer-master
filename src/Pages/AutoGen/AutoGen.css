@@ -1,6 +1,6 @@
 .AutoBottomDiv {
-  width: 90%;
   height: 400px;
+  width: fit-content;
   border: solid rgb(11, 180, 95);
   margin-left: 250px;
   -ms-flex-align: start;
@@ -8,7 +8,7 @@
 }
 .AutolilBottomDiv {
   height: 200px;
-  width: 90%;
+
   border: solid rgb(11, 180, 95);
   margin-left: 250px;
 }
@@ -39,10 +39,20 @@
   font-weight: bold;
 }
 .AutoconstBox {
-  width: 90%;
   height: 250px;
+  width: fit-content;
   border: solid rgb(11, 180, 95);
   margin-left: 250px;
+  margin-bottom: 20px;
+  -ms-flex-align: start;
+  overflow: auto;
+}
+.AutotempconstBox {
+  height: 100px;
+  width: fit-content;
+  border: solid rgb(11, 180, 95);
+  margin-left: 250px;
+  margin-bottom: 20px;
   -ms-flex-align: start;
   overflow: auto;
 }

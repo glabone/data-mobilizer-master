@@ -58,7 +58,7 @@ function App() {
     return (
       <BrowserRouter>
         <div className='App'>
-          <AutoGen setToken={setToken} />
+          <AutoGen setToken={setToken} path='/auto' />
         </div>
       </BrowserRouter>
     );
