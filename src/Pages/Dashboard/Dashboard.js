@@ -234,7 +234,7 @@ function Dashboard(props) {
         </div>
 
         <Grid container direction='row' justify='space-evenly'>
-          <div style={{ marginLeft: '250px' }}>
+          <div style={{ marginLeft: '200px' }}>
             <h2>Select Car ID</h2>
             <FormControl
               className={classes.formControl}
@@ -328,7 +328,7 @@ function Dashboard(props) {
         <div
           className='bollet'
           style={{
-            marginLeft: '20%',
+            marginLeft: '16%',
             marginRight: '25px',
           }}
         >
