@@ -570,7 +570,7 @@ function Dashboard(props) {
                   setTrigger([...trigger]);
                 }}
               >
-                Set Constraints for Report
+                Add Report
               </button>
             ) : (
               <button
@@ -581,7 +581,7 @@ function Dashboard(props) {
                   cursor: 'not-allowed',
                 }}
               >
-                Set Constraints for Report
+                Add Report
               </button>
             )}
           </div>
