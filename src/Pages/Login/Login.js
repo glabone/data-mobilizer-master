@@ -90,7 +90,7 @@ const LoginFormik = withFormik({
     // const { history } = this.props; when added it breaks the code with no error
 
     const REST_API_URL =
-      "http://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/users/";
+      "https://backendowner-env.eba-mhuzfgmk.us-east-2.elasticbeanstalk.com/users/";
     fetch(REST_API_URL + "email=" + values.email, {
       method: "GET",
     })
